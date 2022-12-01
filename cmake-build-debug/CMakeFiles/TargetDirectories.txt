@@ -1,0 +1,3 @@
+D:/College/junior/copy/Latex/Coding/Latex-FormulaAnalysis/cmake-build-debug/CMakeFiles/Latex_FormulaAnalysis.dir
+D:/College/junior/copy/Latex/Coding/Latex-FormulaAnalysis/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/College/junior/copy/Latex/Coding/Latex-FormulaAnalysis/cmake-build-debug/CMakeFiles/rebuild_cache.dir
