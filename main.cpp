@@ -1,14 +1,5 @@
 #include "opt.h"
 
-/*
- * string OptString;
-bool IsPrior;//是否为前缀0,中缀1
-int ParaNum;//参数数量
-bool IsAssociative;//可结合1
-bool IsCommutative;//可交换1
-int Priority;//运算符优先级
-* */
-
 /*解析要点：
  * 1. 解析规范性：括号/dollar是否配对？
  * */
@@ -39,7 +30,6 @@ int main() {
 
     opt DEGREE ("^\\circ",1,1,0,0,0);
 
-
     //加、减、乘、除、乘方
     opt ADD("+",1,2,1,1,5);
     opt MINUS("-",1,2,0,0,5);
@@ -56,9 +46,14 @@ int main() {
     opt IFF("\\iff",1,2,1,1,0);
 
     //set priority
-    int MaxMidPriority=POWER.getPriority();
-    int FrtPriority=MaxMidPriority+1;
     opt opts[21]={FRAC,SQRT,NEGSIGN,SIN,COS,TAN,COT,SEC,CSC,DEGREE,ADD,MINUS,MULTIPLY,DIVIDE,POWER,NOT,AND,OR,XOR,IMPLY,IFF};
+    int MaxMidPriority=0;
+    for(int i=0;i<21;i++){
+        if(opts[i].getPriority()>MaxMidPriority){
+            MaxMidPriority=opts[i].getPriority();
+        }
+    }
+    int FrtPriority=MaxMidPriority+1;
     for(int i=0;i<21;i++){
         if(opts[i].isPrior()==0){
             opts[i].setPriority(FrtPriority);
