@@ -55,46 +55,20 @@ int main() {
     opt IMPLY("\\implies",1,2,0,0,1);
     opt IFF("\\iff",1,2,1,1,0);
 
-    //set priority,有更好的写法吗
+    //set priority
     int MaxMidPriority=POWER.getPriority();
     int FrtPriority=MaxMidPriority+1;
-    FRAC.setPriority(FrtPriority);
-    SQRT.setPriority(FrtPriority);
-    NEGSIGN.setPriority(FrtPriority);
-    SIN.setPriority(FrtPriority);
-    COS.setPriority(FrtPriority);
-    TAN.setPriority(FrtPriority);
-    COT.setPriority(FrtPriority);
-    SEC.setPriority(FrtPriority);
-    CSC.setPriority(FrtPriority);
-    NOT.setPriority(FrtPriority);
+    opt opts[21]={FRAC,SQRT,NEGSIGN,SIN,COS,TAN,COT,SEC,CSC,DEGREE,ADD,MINUS,MULTIPLY,DIVIDE,POWER,NOT,AND,OR,XOR,IMPLY,IFF};
+    for(int i=0;i<21;i++){
+        if(opts[i].isPrior()==0){
+            opts[i].setPriority(FrtPriority);
+        }
+    }
     //DEGREE的priority暂时处理为前缀
     DEGREE.setPriority(FrtPriority);
 
-    string symbolstring;
-    cin >> symbolstring;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*    cout<<"alpha:"<<ALPHA<<endl;
-    FRAC.setPriority(5);
-    cout<<"pri:"<<FRAC.getPriority()<<endl;
-    cout<<"paranum:"<<FRAC.getParaNum()<<endl;*/
-
-
+/*    string symbolstring;
+    cin >> symbolstring;*/
 
     return 0;
 }
