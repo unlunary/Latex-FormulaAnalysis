@@ -27,7 +27,7 @@
 					[
 						0
 					],
-					"name" : "Latex_FormulaAnalysis",
+					"name" : "FormulaAnalysis",
 					"targetIndexes" : 
 					[
 						0
@@ -38,9 +38,9 @@
 			[
 				{
 					"directoryIndex" : 0,
-					"id" : "Latex_FormulaAnalysis::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Latex_FormulaAnalysis-Debug-e51657a9529bb2a6cc55.json",
-					"name" : "Latex_FormulaAnalysis",
+					"id" : "FormulaAnalysis::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-FormulaAnalysis-Debug-1f298b31a12b610d2ece.json",
+					"name" : "FormulaAnalysis",
 					"projectIndex" : 0
 				}
 			]

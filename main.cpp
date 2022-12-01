@@ -9,11 +9,24 @@ bool IsCommutative;//可交换1
 int Priority;//运算符优先级
 * */
 
+/*解析要点：
+ * 1. 解析规范性：括号/dollar是否配对？
+ * */
+void FormulaAnalysis(string str){
+
+}
+
+
 int main() {
+    /*存在的问题：
+     * 1. 确认各运算符优先级客观正确
+     * 2. 角度DEGREE的优先级如何处理？
+     * 3.
+     * */
     opt FRAC("\\frac",0,2,0,0,0);
     //根指数为2可不写，此时ParaNum=1
     opt SQRT("\\sqrt",0,2,0,0,0);
-    //?符号，如何与minus区分？
+    //?负号，解析时如何与minus区分？
     opt NEGSIGN("-",0,1,0,0,0);
 
     //三角函数
@@ -26,29 +39,62 @@ int main() {
 
     opt DEGREE ("^\\circ",1,1,0,0,0);
 
+
     //加、减、乘、除、乘方
-    opt ADD("+",1,2,1,1,0);
-    opt MINUS("-",1,2,0,0,0);
-    opt MULTIPLY("\\times",1,2,1,1,0);
-    opt DIVIDE("\\div",1,2,0,0,0);
-    opt POWER("^",1,2,0,0,0);
+    opt ADD("+",1,2,1,1,5);
+    opt MINUS("-",1,2,0,0,5);
+    opt MULTIPLY("\\times",1,2,1,1,6);
+    opt DIVIDE("\\div",1,2,0,0,6);
+    opt POWER("^",1,2,0,0,7);
 
     opt NOT("\\neg",0,1,0,0,0);
     //逻辑运算符:与/或/异或/蕴含/等价
-    opt AND("\\cap",1,2,1,1,0);
-    opt OR("\\cup",1,2,1,1,0);
-    opt XOR("\\oplus",1,2,1,1,0);
-    opt IMPLY("\\implies",1,2,0,0,0);
+    opt AND("\\cap",1,2,1,1,3);
+    opt OR("\\cup",1,2,1,1,2);
+    opt XOR("\\oplus",1,2,1,1,4);
+    opt IMPLY("\\implies",1,2,0,0,1);
     opt IFF("\\iff",1,2,1,1,0);
 
+    //set priority,有更好的写法吗
+    int MaxMidPriority=POWER.getPriority();
+    int FrtPriority=MaxMidPriority+1;
+    FRAC.setPriority(FrtPriority);
+    SQRT.setPriority(FrtPriority);
+    NEGSIGN.setPriority(FrtPriority);
+    SIN.setPriority(FrtPriority);
+    COS.setPriority(FrtPriority);
+    TAN.setPriority(FrtPriority);
+    COT.setPriority(FrtPriority);
+    SEC.setPriority(FrtPriority);
+    CSC.setPriority(FrtPriority);
+    NOT.setPriority(FrtPriority);
+    //DEGREE的priority暂时处理为前缀
+    DEGREE.setPriority(FrtPriority);
 
-    cout<<"alpha:"<<ALPHA<<endl;
+    string symbolstring;
+    cin >> symbolstring;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*    cout<<"alpha:"<<ALPHA<<endl;
     FRAC.setPriority(5);
     cout<<"pri:"<<FRAC.getPriority()<<endl;
-    cout<<"paranum:"<<FRAC.getParaNum()<<endl;
+    cout<<"paranum:"<<FRAC.getParaNum()<<endl;*/
 
-    /*string symbolstring;
-    cin >> symbolstring;*/
+
 
     return 0;
 }

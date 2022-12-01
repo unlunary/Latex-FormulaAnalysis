@@ -1,3 +1,5 @@
 # ninja log v5
 0	621	6916106279432977	CMakeFiles/Latex_FormulaAnalysis.dir/main.cpp.obj	a6d6e60754dfbab9
 626	828	6916106281428113	Latex_FormulaAnalysis.exe	6e334c7b7a08676a
+1	664	6916187366494860	CMakeFiles/FormulaAnalysis.dir/main.cpp.obj	44d8f8dbe5e405fb
+668	879	6916187368572206	FormulaAnalysis.exe	1d85c7e9326cda4c
