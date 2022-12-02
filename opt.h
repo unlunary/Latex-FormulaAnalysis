@@ -3,7 +3,6 @@
 #endif //FORMULAANALYSIS_OPT_H
 
 #include <iostream>
-#include <string>
 using namespace std;
 
 #define ALPHA "\\alpha"
@@ -12,6 +11,8 @@ using namespace std;
 #define LAMBDA "\\lambda"
 #define PI "\\pi"
 #define TAU "\\tau"
+
+
 
 
 class opt{
@@ -27,8 +28,13 @@ public:
             : OptString(optString), IsPrior(isPrior), ParaNum(paraNum), IsAssociative(isAssociative),
               IsCommutative(isCommutative), Priority(priority) {}
 
+
+
     virtual ~opt() {
     }
+    opt(){}
+
+
 
     const string &getOptString() const {
         return OptString;
@@ -84,5 +90,6 @@ class bitnode{
 public:
     string Element;//元素
     /*↑这里要不要用模板？存opt类，或者运算数值*/
+    int paranum;
     bitnode *lchild,*rchild;
 };
