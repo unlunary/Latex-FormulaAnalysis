@@ -1,4 +1,0 @@
-"D:\Tools\CLion 2022.2.4\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug "-DCMAKE_MAKE_PROGRAM=D:/Tools/CLion 2022.2.4/bin/ninja/win/ninja.exe" -G Ninja -S D:\College\junior\copy\Latex\Coding\Latex-FormulaAnalysis -B D:\College\junior\copy\Latex\Coding\Latex-FormulaAnalysis\cmake-build-debug
--- Configuring done
--- Generating done
--- Build files have been written to: D:/College/junior/copy/Latex/Coding/Latex-FormulaAnalysis/cmake-build-debug
