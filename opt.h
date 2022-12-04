@@ -63,23 +63,3 @@ private:
     bool IsCommutative;//可交换1
     float Priority;//运算符优先级
 };
-
-//树节点暂放于此处定义
-class bitnode{
-public:
-    string Element;//元素
-    /*↑这里要不要用模板？存opt类，或者运算数值*/
-    int paranum;
-    bitnode *lchild,*rchild;
-};
-
-template <class T>
-class testNode
-{
-public:
-    T Element;//元素
-    int paranum;
-    testNode* lchild, *rchild;
-};
-
-
