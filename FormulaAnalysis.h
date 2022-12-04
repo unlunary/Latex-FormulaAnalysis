@@ -1,7 +1,7 @@
+//定义公式解析
 #pragma once
 
 #include "opt.h"
-#include "opts.h"
 
 class bitnode{
 public:

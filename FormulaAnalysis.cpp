@@ -1,4 +1,5 @@
 #include "FormulaAnalysis.h"
+#include "opts.h"
 
 bitnode* CreateBitree(string ele){
     bitnode* T=new bitnode;
