@@ -63,11 +63,11 @@ void markPriority(const string &str)
 	}
 }
 
+
 /*解析要点：
- * 1. 解析规范性：括号/dollar是否配对？
  * 其余公式的合法性可在解析时检查，抛出异常即可
  * */
-bitnode *FormulaAnalysis(string str)
+bitnode *CreateFormulaTree(string str)
 {
 	bitnode *T = new bitnode;
 	int optNum = 0;
@@ -76,6 +76,9 @@ bitnode *FormulaAnalysis(string str)
 	opt root;
 	for (int i = 0; i < 21; i++)
 	{
+        //step1：先处理括号：
+
+        //step2：再处理运算符优先级：
 		if (str.find(opts[i].getOptString(), 0) != string::npos)
 		{
 			int pos_findrpt = 0;
@@ -106,8 +109,8 @@ bitnode *FormulaAnalysis(string str)
 		T = CreateBitree(root.getOptString());
 		string leftstr = str.substr(0, rootPosition);
 		string rightstr = str.substr(rootPosition + root.getOptString().length(), str.length());
-		T->lchild = FormulaAnalysis(leftstr);
-		T->rchild = FormulaAnalysis(rightstr);
+		T->lchild = CreateFormulaTree(leftstr);
+		T->rchild = CreateFormulaTree(rightstr);
 		return T;
 	}
 }

@@ -4,6 +4,7 @@
 #include "opt.h"
 
 #include <vector>
+#include<map>
 
 class bitnode
 {
@@ -27,9 +28,11 @@ void split(string str, const string &pattern, vector<string> &result);
 
 void markPriority(const string &str);
 
+//void parenthesesMatching(string &str,vector<string> &res);
+
 bitnode *CreateBitree(string ele);
 
-bitnode *FormulaAnalysis(string str);
+bitnode *CreateFormulaTree(string str);
 
 void SetPriority();
 
