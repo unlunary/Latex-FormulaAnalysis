@@ -2,7 +2,6 @@
 #pragma once
 
 #include <iostream>
-#include <vector>
 #include <string>
 
 using namespace std;
@@ -15,51 +14,48 @@ using namespace std;
 #define TAU "\\tau"
 
 
-
-
-class opt{
+class opt
+{
 public:
-    opt(const string &optString, bool isPrior, int paraNum, bool isAssociative, bool isCommutative, float priority)
-            : OptString(optString), IsPrior(isPrior), ParaNum(paraNum), IsAssociative(isAssociative),
-              IsCommutative(isCommutative), Priority(priority) {}
+	opt(const string &optString, bool isPrior, int paraNum, bool isAssociative, bool isCommutative, float priority)
+			: OptString(optString), IsPrior(isPrior), ParaNum(paraNum), IsAssociative(isAssociative),
+			  IsCommutative(isCommutative), Priority(priority) {}
 
 
+	virtual ~opt() {}
 
-    virtual ~opt() {
-    }
-    opt(){}
-
+	opt() {}
 
 
-    const string &getOptString() const;
+	const string &getOptString() const;
 
-    void setOptString(const string &optString);
+	void setOptString(const string &optString);
 
-    bool isPrior() const;
+	bool isPrior() const;
 
-    void setIsPrior(bool isPrior);
+	void setIsPrior(bool isPrior);
 
-    int getParaNum() const;
+	int getParaNum() const;
 
-    void setParaNum(int paraNum);
+	void setParaNum(int paraNum);
 
-    bool isAssociative() const;
+	bool isAssociative() const;
 
-    void setIsAssociative(bool isAssociative);
+	void setIsAssociative(bool isAssociative);
 
-    bool isCommutative() const;
+	bool isCommutative() const;
 
-    void setIsCommutative(bool isCommutative);
+	void setIsCommutative(bool isCommutative);
 
-    float getPriority() const;
+	float getPriority() const;
 
-    void setPriority(float priority);
+	void setPriority(float priority);
 
 private:
-    string OptString;
-    bool IsPrior;//是否为前缀0,中缀1
-    int ParaNum;//参数数量
-    bool IsAssociative;//可结合1
-    bool IsCommutative;//可交换1
-    float Priority;//运算符优先级
+	string OptString;
+	bool IsPrior;//是否为前缀0,中缀1
+	int ParaNum;//参数数量
+	bool IsAssociative;//可结合1
+	bool IsCommutative;//可交换1
+	float Priority;//运算符优先级
 };
