@@ -1,70 +1,7 @@
 #include "FormulaAnalysis.h"
-#include<map>
 
 int resSign=0;
 map<string,string> resAndSrc;
-
-void parenthesesMatching(string &str,map<string,string> &resAndSrc){//vector<string> &res,
-    for(int i=0;i<str.length();i++){//length是不是边处理边变化？
-        string replaceSign="res";
-        if(str[i]=='('){
-            int depth=-1;
-            for(int j=i+1;j<str.length();j++){
-                if(str[j]=='('){
-                    depth--;
-                }
-                else if(str[j]==')'){
-                    depth++;
-                }
-                if(depth==0){
-                    string s=str.substr(i,j-i+1);
-                    //res.push_back(s);
-                    replaceSign+=to_string(resSign);
-                    resSign++;
-                    //cout<<replaceSign<<endl;
-                    resAndSrc.insert(pair<string,string>(replaceSign,s));
-                    str.replace(i,j-i+1,replaceSign);
-                    break;
-                }
-            }
-            i=i+replaceSign.length()-1;
-        }
-    }
-}
-
-void func(bitnode *root){//含有res在叶子的解析树 ,,vector<string> &res
-    if(root){//该树非空
-        if(root->lchild==NULL&&root->rchild==NULL){//叶子
-            string str=root->Element;
-            if(str.find("res",0)!=string::npos){
-                //string res_id;
-                string map_res;
-                int pos=str.find("res",0);
-                for(int i=pos;i<str.length();i++){
-                    if(str[i]=='}'){
-                        //res_id=str.substr(pos+3,i-pos);
-                        map_res=str.substr(pos,i-pos);
-                    }
-                }
-                /*int id=atoi(res_id.c_str());
-                parenthesesMatching(res[id],)*/
-                map<string,string>::iterator it;
-                it=resAndSrc.find(map_res);
-                string map_src=it->second;//取出该res对应的含括号的原公式
-                root->Element=map_src.substr(1, map_src.length() - 2);
-                parenthesesMatching(root->Element,resAndSrc);
-                root=CreateFormulaTree(root->Element);
-                //func(root);
-            }
-
-        }
-        else{
-            func(root->lchild);
-            func(root->rchild);
-        }
-    }
-}
-
 
 int main()
 {
@@ -82,18 +19,13 @@ int main()
 	}*/
 
     //step1:将含有括号的部分转化为"res+i"并放入res中，使symbolstring中不含有任何“()”
-    vector<string>res;
-    parenthesesMatching(symbolstring,resAndSrc);
+    parenthesesMatching(symbolstring);
 
     //step2：取symbolstring中最低优先级的部分递归成为根结点
 	bitnode *root;
 	root = CreateFormulaTree(symbolstring);
     cout<<"T-root"<<root->Element<<endl;
 
-    //step3：处理叶子结点处的"res+i",再次对其进行递归解析
-    func(root);
-    func(root);
-    cout<<"T-root"<<root->Element<<endl;
 
 
     /*fortest:
