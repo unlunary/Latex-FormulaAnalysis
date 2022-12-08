@@ -12,27 +12,22 @@ bitnode *CreateBitree(string ele)
 	return T;
 }
 
-void split(string str, const string &pattern, vector<string> &result)
+//语义分割，已知问题：字母常量前的括号等与字母粘连，需要单独处理
+void split(string str, vector<string> &result)
 {
-	str += pattern;//扩展字符串以方便操作
-	for (int i = 0; i < str.size(); i++)
+	string pattern = R"((\+|\-|\^|\(|\{)[a-z](?=\+|\-|\^|\)|\})|[0-9]|\+|\-|\^|\(|\)|\{|\}|\[|\]|\\+[a-z]*)";
+	regex reg(pattern);
+	smatch sm;
+	while (regex_search(str, sm, reg))
 	{
-		int pos = str.find(pattern, i);
-		if (pos < str.size())
-		{
-			string s = str.substr(i, pos - i);
-			if (!s.empty())
-				result.push_back(s);
-			result.push_back(pattern);
-			i = pos + pattern.size() - 1;
-		}
+		result.push_back(sm[0]);
+		str = sm.suffix();
 	}
-	result.pop_back();
 }
 
 void markPriority(const string &str)
 {
-	//遍历srt，每遇到一个(，就把接下来的)之前的所有运算符的优先级加ADDER(10)
+	//遍历srt，每遇到一个(，就把接下来的)之前的所有 运算符的优先级加ADDER(10)
 	//每遇到一个)，就把接下来的(之前的所有运算符的优先级减ADDER(10)
 	for (int i = 0; i < str.length(); i++)
 	{

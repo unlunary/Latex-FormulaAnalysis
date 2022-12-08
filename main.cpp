@@ -1,15 +1,16 @@
 #include "FormulaAnalysis.h"
+#include <regex>
 
 int main()
 {
-	SetPriority();
+	//SetPriority();
 	string symbolstring;
 	cout << "Please input the symbol string:";
 	cin >> symbolstring;
 
 	//对公式字符串首先进行一次语义分割，剥离出符号、运算数等后再进入解析
 	vector<string> result;
-	split(symbolstring, "+", result);
+	split(symbolstring, result);
 	for (int i = 0; i < result.size(); i++)
 	{
 		cout << i << ": " << result[i] << endl;
@@ -34,6 +35,18 @@ int main()
 	 * $1 + (\frac{1}{1-x^2})^3$
 	 * $1 + \left(\frac{1}{1-x^2}\right)^3$
 	 */
+
+	/*string pattern = R"((\+|\-|\^|\(|\{)[a-z](?=\+|\-|\^|\)|\})|[0-9]|\+|\-|\^|\(|\)|\{|\}|\[|\]|\\+[a-z]*)";
+	string str;
+	cout << "Please input the symbol string:";
+	cin >> str;
+	regex reg(pattern);
+	smatch sm;
+	while (regex_search(str, sm, reg))
+	{
+		cout << sm[0] << endl;
+		str = sm.suffix();
+	}*/
 
 
 	return 0;

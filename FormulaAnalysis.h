@@ -4,6 +4,7 @@
 #include "opt.h"
 
 #include <vector>
+#include <regex>
 
 class bitnode
 {
@@ -23,7 +24,7 @@ public:
 	testNode *lchild, *rchild;
 };
 
-void split(string str, const string &pattern, vector<string> &result);
+void split(string str, vector<string> &result);
 
 void markPriority(const string &str);
 
