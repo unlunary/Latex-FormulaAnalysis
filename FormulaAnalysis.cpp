@@ -12,15 +12,30 @@ bitnode *CreateBitree(string ele)
 	return T;
 }
 
-//语义分割，已知问题：字母常量前的括号等与字母粘连，需要单独处理
+//语义分割
+//要求：公式不得有空格
 void split(string str, vector<string> &result)
 {
-	string pattern = R"((\+|\-|\^|\(|\{)[a-z](?=\+|\-|\^|\)|\})|[0-9]|\+|\-|\^|\(|\)|\{|\}|\[|\]|\\+[a-z]*)";
+	string pattern = R"((\+|\-|\^|\(|\{)[a-z](?=\+|\-|\^|\)|\})|[0-9]+|\+|\-|\^|\(|\)|\{|\}|\[|\]|\\+[a-z]*)";
 	regex reg(pattern);
 	smatch sm;
 	while (regex_search(str, sm, reg))
 	{
-		result.push_back(sm[0]);
+		string pattern2 = R"((\+|\-|\*|\(|\{|\[|\^)(?=[a-z]|[A-Z]))";
+		regex reg2(pattern2);
+		smatch sm2;
+		string temp = sm[0];
+		regex_search(temp, sm2, reg2);
+		if (sm2[0] != "")
+		{
+			result.push_back(sm2[0]);
+			temp = temp.substr(1);
+			result.push_back(temp);
+		}
+		else
+		{
+			result.push_back(sm[0]);
+		}
 		str = sm.suffix();
 	}
 }
