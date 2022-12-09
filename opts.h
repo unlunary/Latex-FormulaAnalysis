@@ -3,6 +3,8 @@
 
 #include "opt.h"
 
+#define OPTNUM 21
+
 /*存在的问题：
      * 1. 确认各运算符优先级客观正确
      * 2. 角度DEGREE的优先级如何处理？

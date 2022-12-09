@@ -24,9 +24,11 @@ public:
 	testNode *lchild, *rchild;
 };
 
-void split(string str, vector<string> &result);
+void pushEle(const string &ele, vector<opt> &r_opt, vector<string> &r_val);
 
-void markPriority(const string &str);
+void split(string str, vector<opt> &opt, vector<string> &result);
+
+void markPriority(vector<opt> &opt, vector<string> &ele);
 
 bitnode *CreateBitree(string ele);
 

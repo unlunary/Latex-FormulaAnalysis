@@ -12,9 +12,24 @@ bitnode *CreateBitree(string ele)
 	return T;
 }
 
+void pushEle(const string &ele, vector<opt> &r_opt, vector<string> &r_val)
+{
+	static int optnum = 0;
+	for (int i = 0; i < OPTNUM; ++i)
+	{
+		if (ele == opts[i].getOptString())
+		{
+			r_opt.push_back(opts[i]);
+			r_val.emplace_back("opt" + to_string(optnum++));
+			return;
+		}
+	}
+	r_val.push_back(ele);
+}
+
 //语义分割
 //要求：公式不得有空格
-void split(string str, vector<string> &result)
+void split(string str, vector<opt> &opt, vector<string> &result)
 {
 	string pattern = R"((\+|\-|\^|\(|\{)[a-z](?=\+|\-|\^|\)|\})|[0-9]+|\+|\-|\^|\(|\)|\{|\}|\[|\]|\\+[a-z]*)";
 	regex reg(pattern);
@@ -28,46 +43,36 @@ void split(string str, vector<string> &result)
 		regex_search(temp, sm2, reg2);
 		if (sm2[0] != "")
 		{
-			result.push_back(sm2[0]);
+			pushEle(sm2[0], opt, result);
 			temp = temp.substr(1);
-			result.push_back(temp);
-		}
-		else
+			pushEle(temp, opt, result);
+		} else
 		{
-			result.push_back(sm[0]);
+			pushEle(sm[0], opt, result);
 		}
 		str = sm.suffix();
 	}
 }
 
-void markPriority(const string &str)
+void markPriority(vector<opt> &opt, vector<string> &ele)
 {
-	//遍历srt，每遇到一个(，就把接下来的)之前的所有 运算符的优先级加ADDER(10)
-	//每遇到一个)，就把接下来的(之前的所有运算符的优先级减ADDER(10)
-	for (int i = 0; i < str.length(); i++)
+	//遍历srt，每遇到一个(，就把接下来的同级)之前的所有运算符的优先级加ADDER(10)
+	for (int i = 0; i < ele.size(); i++)
 	{
-		if (str[i] == '(')
+		if (ele[i] == "(")
 		{
-			for (int j = i + 1; j < str.length(); j++)
+			int depth = 1;
+			for (int j = i + 1; j < ele.size(); j++)
 			{
-				if (str[j] == ')')
+				if (ele[j] == "(") depth++;
+				else if (ele[j] == ")") depth--;
+				if (depth == 0) break;
+				if (ele[j].substr(0, 3) == "opt")
 				{
-					break;
-				} //else if ()
-			}
-		} else if (str[i] == ')')
-		{
-			for (int j = i + 1; j < str.length(); j++)
-			{
-				if (str[j] == '(')
-				{
-					break;
-				} else
-				{
-					//for (int k = 0; k < opts.size(); k++) {
-					//    if (str[j] == opts[k].getOptString()[0]) {
-					//        opts[k].setPriority(opts[k].getPriority() - ADDER);
+					int optIndex = stoi(ele[j].substr(3));
+					opt[optIndex].setPriority(opt[optIndex].getPriority() + ADDER);
 				}
+
 			}
 		}
 	}
@@ -110,8 +115,7 @@ bitnode *FormulaAnalysis(string str)
 		T = CreateBitree(str);
 		cout << "T-ele:" << T->Element << endl;
 		return T;
-	}
-	else
+	} else
 	{
 		T = CreateBitree(root.getOptString());
 		string leftstr = str.substr(0, rootPosition);
