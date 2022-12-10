@@ -2,6 +2,7 @@
 #pragma once
 
 #include "opt.h"
+extern map<string,opt> string_to_opt;
 
 /*存在的问题：
      * 1. 确认各运算符优先级客观正确

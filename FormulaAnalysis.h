@@ -6,6 +6,9 @@
 #include <vector>
 #include<map>
 
+//1210
+#include<list>
+
 extern int resSign;
 extern map<string,string> resAndSrc;
 
@@ -16,6 +19,7 @@ public:
 	/*↑这里要不要用模板？存opt类，或者运算数值*/
 	int paranum;
 	bitnode *lchild, *rchild;
+    list<bitnode*> paranode;
 };
 
 template<class T>
@@ -34,8 +38,6 @@ void markPriority(const string &str);
 string resMatching(string str);
 
 void parenthesesMatching(string &str);
-
-//void parenthesesMatching(string &str,vector<string> &res);
 
 bitnode *CreateBitree(string ele);
 
