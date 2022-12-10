@@ -47,3 +47,7 @@ void func(bitnode *root);//错误的递归函数，先留着
 
 void SetPriority();
 
+/*结合律*/
+void set_string_to_opt();
+void set_asstree(bitnode *root);
+void Associativity(bitnode *root);
