@@ -36,6 +36,8 @@ int main()
     ReplaceLeafToX(root,CONSTANTS);
     cout<<"T-root"<<root->Element<<endl;
 
+    SetOrder(CONSTANTS);
+
     /*fortest:
 	 * $\alpha$
 	 * $\alpha+\beta+\pi$

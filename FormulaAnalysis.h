@@ -64,3 +64,8 @@ void print_ass_tree(bitnode *root);
 
 /*叶子节点替换*/
 void ReplaceLeafToX(bitnode* root,map<string,string>&CONSTANTS);
+
+/*交换律*/
+void sort_string(string *in_array, int n, string *out_array);
+void SetOrder(map<string,string>&CONSTANTS);
+void Commutativity(string *symbols,bitnode* root);

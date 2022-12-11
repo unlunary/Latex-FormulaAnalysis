@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "FormulaAnalysis.h"
 #include "opts.h"
 
@@ -237,9 +238,6 @@ void SetPriority()
 	DEGREE.setPriority(FrtPriority);
 }
 
-
-
-/*步骤二：结合律*/
 //将opt的string表达与类opt映射
 void set_string_to_opt(){
     for(int i=0;i<21;i++){
@@ -368,7 +366,6 @@ void print_ass_tree(bitnode *root){
 }
 
 /*步骤四：叶子结点替换*/
-
 void SetConstants(map<string,string>&CONSTANTS){
     CONSTANTS.insert(pair<string,string>("ALPHA","\\alpha"));
     CONSTANTS.insert(pair<string,string>("BETA","\\beta"));
@@ -378,6 +375,7 @@ void SetConstants(map<string,string>&CONSTANTS){
     CONSTANTS.insert(pair<string,string>("TAU","\\tau"));
 }
 
+//再检查一下，常量/变量的单字符输入，框架参照交换律
 void ReplaceLeafToX(bitnode* root,map<string,string>&CONSTANTS){
     list<bitnode*>nodes;
     for(auto i=root->paranode.begin();i!=root->paranode.end();i++){
@@ -410,6 +408,65 @@ void ReplaceLeafToX(bitnode* root,map<string,string>&CONSTANTS){
 }
 
 
+/*步骤三：交换律*/
+
+//排序规则是否符合要求？
+void sort_string(string *in_array, int n, string *out_array)
+{
+    vector<string> strArray;
+    int i,j = 0;
+    for (int i = 0; i < n; i++)
+    {
+        strArray.push_back(in_array[i]);
+    }
+    sort(strArray.begin(), strArray.end());
+    vector<string>::iterator st;
+    for (st = strArray.begin(); st != strArray.end(); st++)
+    {
+        //cout << *st << endl;//打印结果
+        out_array[j++] = *st;
+    }
+}
+
+//分段重排。明天再写
+void SetOrder(map<string,string>&CONSTANTS){//vector<map<string,int>>ordervector
+    string symbols_ini[28],symbols[28];
+    int i=0;
+    for(i=0;i<21;i++){
+        symbols_ini[i]=opts[i].getOptString();
+    }
+    for(auto it=CONSTANTS.begin();it!=CONSTANTS.end();it++){
+        symbols_ini[i++]=it->second;
+    }
+    symbols_ini[27]="X";
+    sort_string(symbols_ini,28,symbols);
+
+}
+
+void Commutativity(string *symbols,bitnode* root){
+    bool is_opt=0;
+    for(int i=0;i<21;i++){
+        if(root->Element==opts[i].getOptString()){
+            is_opt=1;
+            break;
+        }
+    }
+    if(is_opt==1){
+        list<bitnode*>nodes;
+        for(int j=0;j<28;j++){
+            for(auto i=root->paranode.begin();i!=root->paranode.end();i++){
+                bitnode* currentNode=*i;
+                if(symbols[j]==currentNode->Element){
+                    nodes.push_back(currentNode);
+                }
+            }
+        }
+        root->paranode=nodes;
+    }
+    for(auto i=root->paranode.begin();i!=root->paranode.end();i++){
+        Commutativity(symbols,*i);
+    }
+}
 
 
 
