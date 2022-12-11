@@ -16,7 +16,6 @@ class bitnode
 {
 public:
 	string Element;//元素
-	/*↑这里要不要用模板？存opt类，或者运算数值*/
 	int paranum;
 	bitnode *lchild, *rchild;
     list<bitnode*> paranode;
@@ -31,23 +30,37 @@ public:
 	testNode *lchild, *rchild;
 };
 
-void split(string str, const string &pattern, vector<string> &result);
-
-void markPriority(const string &str);
-
-string resMatching(string str);
-
+/*解析1*/
 void parenthesesMatching(string &str);
 
-bitnode *CreateBitree(string ele);
+string resMatching(string str);
 
 bitnode *CreateFormulaTree(string str);
 
 void func(bitnode *root);//错误的递归函数，先留着
 
+/*解析2*/
+void split(string str, const string &pattern, vector<string> &result);
+
+void markPriority(const string &str);
+
+
+
+/*BASIC*/
 void SetPriority();
+
+void SetConstants(map<string,string>&CONSTANTS);
+
+bitnode *CreateBitree(string ele);
 
 /*结合律*/
 void set_string_to_opt();
+
 void set_asstree(bitnode *root);
+
 void Associativity(bitnode *root);
+
+void print_ass_tree(bitnode *root);
+
+/*叶子节点替换*/
+void ReplaceLeafToX(bitnode* root,map<string,string>&CONSTANTS);

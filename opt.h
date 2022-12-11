@@ -3,17 +3,8 @@
 
 #include <iostream>
 #include <string>
-#include <map>
 
 using namespace std;
-
-#define ALPHA "\\alpha"
-#define BETA "\\beta"
-#define GAMMA "\\gamma"
-#define LAMBDA "\\lambda"
-#define PI "\\pi"
-#define TAU "\\tau"
-
 
 class opt
 {

@@ -127,9 +127,7 @@ string resMatching(string str){
     }
 }
 
-/*解析要点：
- * 其余公式的合法性可在解析时检查，抛出异常即可
- * */
+//其余公式的合法性可在解析时检查，抛出异常即可
 bitnode *CreateFormulaTree(string str)
 {
     bitnode *T = new bitnode;
@@ -241,7 +239,7 @@ void SetPriority()
 
 
 
-/*结合律*/
+/*步骤二：结合律*/
 //将opt的string表达与类opt映射
 void set_string_to_opt(){
     for(int i=0;i<21;i++){
@@ -264,11 +262,8 @@ void set_asstree(bitnode *root){
     }
 }
 
-/*问题：
- * 1. 各个结点有没有接起来？
- * 2. 之后如何遍历打印这颗树？
- */
 void Associativity(bitnode *root){
+
     list<bitnode*> nodes;
     nodes.push_back (root);//根节点初始化nodes链表
     bitnode * currentNode;
@@ -305,7 +300,7 @@ void Associativity(bitnode *root){
             nodes.pop_front();
         }
         else if(currentNode_type==0&&is_associative==0)
-        {//不可结合操作符
+        {//不可交换操作符
             nodes.pop_front();
             //将该操作符的list<paranode>都push进list<nodes>后面
             for(auto itt=currentNode->paranode.begin();itt!=currentNode->paranode.end();itt++)
@@ -340,12 +335,82 @@ void Associativity(bitnode *root){
         root->paranode.clear();
     }
     root->paranode=nodes;
-    cout<<"!T-ele"<<root->Element<<endl;
+    //cout<<"!T-ele"<<root->Element<<endl;
     for(auto it=root->paranode.begin();it!=root->paranode.end();it++){
         Associativity(*it);
     }
 }
 
+/*多叉树无法中序遍历,大概用不到*/
 void print_ass_tree(bitnode *root){
+    if(root){
+        for(auto it=root->paranode.begin();it!=root->paranode.end();it++){
+            bitnode *currentNODE=*it;
+            bool currentNode_type=1;//0为操作符，1为常量符号
+            //确定ele类型
+            for(int i=0;i<21;i++)
+            {
+                if(currentNODE->Element==opts[i].getOptString())
+                {
+                    currentNode_type=0;
+                    break;
+                }
+            }
+            if(currentNode_type==0){
+                print_ass_tree(*it);
+            }
 
+            else{
+                //cout<<currentNODE->Element<<root->Element;
+            }
+        }
+    }
 }
+
+/*步骤四：叶子结点替换*/
+
+void SetConstants(map<string,string>&CONSTANTS){
+    CONSTANTS.insert(pair<string,string>("ALPHA","\\alpha"));
+    CONSTANTS.insert(pair<string,string>("BETA","\\beta"));
+    CONSTANTS.insert(pair<string,string>("GAMMA","\\gamma"));
+    CONSTANTS.insert(pair<string,string>("LAMBDA","\\lambda"));
+    CONSTANTS.insert(pair<string,string>("PI","\\pi"));
+    CONSTANTS.insert(pair<string,string>("TAU","\\tau"));
+}
+
+void ReplaceLeafToX(bitnode* root,map<string,string>&CONSTANTS){
+    list<bitnode*>nodes;
+    for(auto i=root->paranode.begin();i!=root->paranode.end();i++){
+        bitnode* currentNode=*i;
+        bool is_opt=0;
+        bool is_constant=0;
+        for(int j=0;j<21;j++){
+            if(currentNode->Element==opts[j].getOptString()){
+                is_opt=1;
+                ReplaceLeafToX(currentNode,CONSTANTS);
+                break;
+            }
+        }
+        if(is_opt==0){//不为操作符
+            for(auto j=CONSTANTS.begin();j!=CONSTANTS.end();j++){
+
+                if(currentNode->Element.find(j->second,0)!=string::npos){
+                    is_constant=1;
+                    currentNode->Element=j->second;
+                    break;
+                }
+            }
+            if(is_constant==0){
+                currentNode->Element="X";
+            }
+        }
+        nodes.push_back(currentNode);
+    }
+    root->paranode=nodes;
+}
+
+
+
+
+
+

@@ -2,7 +2,11 @@
 #pragma once
 
 #include "opt.h"
+#include <map>
 extern map<string,opt> string_to_opt;
+
+
+
 
 /*存在的问题：
      * 1. 确认各运算符优先级客观正确
@@ -42,3 +46,5 @@ opt IFF("\\iff", 1, 2, 1, 1, 0);
 
 opt opts[21] = {FRAC, SQRT, NEGSIGN, SIN, COS, TAN, COT, SEC, CSC, DEGREE, ADD, MINUS, MULTIPLY, DIVIDE, POWER, NOT,
 				AND, OR, XOR, IMPLY, IFF};
+
+
