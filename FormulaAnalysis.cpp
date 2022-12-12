@@ -504,6 +504,41 @@ list<int> print_cmt_tree(map<string,int> toParanum,map<string,int> &toOrder,bitn
     return orderList;
 }
 
+list<string> PrintTree(bitnode* root,map<string,int> toParanum){
+    list<string>index;
+    bool is_opt=0;
+    for(int i=0;i<21;i++){
+        if(root->Element==opts[i].getOptString()){
+            is_opt=1;
+            break;
+        }
+    }
+    if(is_opt==0){
+        index.push_back(root->Element);
+    }
+    else {
+        index.push_back (root->Element);
+        index.push_back ("(");
+
+        bitnode *currentNode=root;
+        map<string, int>::iterator it2;
+        it2 = toParanum.find (currentNode->Element);
+        int PARANUM = it2->second;
+        index.push_back (to_string (PARANUM));
+
+        index.push_back (")");
+
+        list<bitnode *> paranodes = root->paranode;
+        for (auto i = paranodes.begin (); i != paranodes.end (); i++) {
+            index.push_back ("{");
+            list<string>temp=PrintTree (*i, toParanum);
+            index.splice(index.end(),temp);
+            index.push_back ("}");
+        }
+    }
+    return index;
+}
+
 
 
 

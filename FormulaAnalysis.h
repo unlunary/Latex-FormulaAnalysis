@@ -75,3 +75,6 @@ void SetParanumMap(vector<string> ordervec,map<string,int> &toParanum);
 void SetOrderMap(vector<string> ordervec,map<string,int> &toOrder);
 
 list<int> print_cmt_tree(map<string,int> toParanum,map<string,int> &toOrder,bitnode* root);
+
+/*索引创建*/
+list<string> PrintTree(bitnode* root,map<string,int> toParanum);

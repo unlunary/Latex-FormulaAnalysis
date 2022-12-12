@@ -3,6 +3,7 @@
 
 
 int resSign=0;
+
 map<string,string> resAndSrc;
 
 map<string,opt> string_to_opt;
@@ -10,6 +11,7 @@ map<string,opt> string_to_opt;
 
 int main()
 {
+    /*初始化*/
 	SetPriority();
     map<string,string>CONSTANTS;
     SetConstants(CONSTANTS);
@@ -17,6 +19,7 @@ int main()
 	string symbolstring;
     symbolstring="${(4+((\\alpha+2)+3))}\\times{3}+{(4+((1+\\beta)+3))}$";
     cout<<"symbolstring:"<<symbolstring<<endl;
+
     //step1:将含有括号的部分转化为"res+i"并放入res中，使symbolstring中不含有任何“()”
     parenthesesMatching(symbolstring);
 
@@ -36,21 +39,20 @@ int main()
     cout<<"T-root"<<root->Element<<endl;
 
     //交换律
-    vector<string> ordervec;
-    map<string,int> toParanum;
-    map<string,int> toOrder;
+    static vector<string> ordervec;
+    static map<string,int> toParanum;
+    static map<string,int> toOrder;
     SetOrder(CONSTANTS,ordervec);
     SetParanumMap(ordervec,toParanum);
     SetOrderMap(ordervec,toOrder);
     Commutativity(ordervec,root);
     list<int>orderList=print_cmt_tree(toParanum,toOrder,root);
-    cout<<endl<<"解析树-字符串：";
+/*    cout<<endl<<"tree to string：";
     for(auto i=orderList.begin();i!=orderList.end();i++){
-        cout<<*i;
+        cout<<*i;//打印失败？
     }
-    cout<<endl;
-    //cout<<"T-root"<<root->Element<<endl;
-
+    cout<<endl;*/
+    PrintTree(root,toParanum);
 
 
 
