@@ -37,9 +37,22 @@ int main()
 
     //交换律
     vector<string> ordervec;
+    map<string,int> toParanum;
+    map<string,int> toOrder;
     SetOrder(CONSTANTS,ordervec);
+    SetParanumMap(ordervec,toParanum);
+    SetOrderMap(ordervec,toOrder);
     Commutativity(ordervec,root);
-    cout<<"T-root"<<root->Element<<endl;
+    list<int>orderList=print_cmt_tree(toParanum,toOrder,root);
+    cout<<endl<<"解析树-字符串：";
+    for(auto i=orderList.begin();i!=orderList.end();i++){
+        cout<<*i;
+    }
+    cout<<endl;
+    //cout<<"T-root"<<root->Element<<endl;
+
+
+
 
     /*fortest:
 	 * $\alpha$

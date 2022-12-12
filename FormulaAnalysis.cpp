@@ -1,4 +1,3 @@
-#include <algorithm>
 #include "FormulaAnalysis.h"
 #include "opts.h"
 
@@ -459,6 +458,67 @@ void Commutativity(vector<string> ordervec,bitnode* root){//string *symbols
         Commutativity(ordervec,*i);
     }
 }
+
+void SetParanumMap(vector<string> ordervec,map<string,int> &toParanum){
+    for(int i=0;i<7;i++){
+        toParanum.insert(pair<string,int>(ordervec[i],0));
+    }
+    for(int i=7;i<28;i++){
+        for(int j=0;j<21;j++){
+            if(ordervec[i]==opts[j].getOptString()){
+                toParanum.insert(pair<string,int>(ordervec[i],opts[j].getParaNum()));
+            }
+        }
+    }
+}
+
+void SetOrderMap(vector<string> ordervec,map<string,int> &toOrder){
+    for(int i=0;i<28;i++){
+        toOrder.insert(pair<string,int>(ordervec[i],i));
+    }
+}
+
+list<int> print_cmt_tree(map<string,int> toParanum,map<string,int> &toOrder,bitnode* root){
+    list<bitnode*>nodes;
+    list<int>orderList;//记录结点order和paranum
+    if(root){
+        nodes.push_back (root);
+        while(!nodes.empty()){
+            bitnode * currentNode=nodes.front();
+            map<string,int>::iterator it;
+            it=toOrder.find(currentNode->Element);
+            int ORDER=it->second;
+            orderList.push_back (ORDER);
+
+            map<string,int>::iterator it2;
+            it2=toParanum.find(currentNode->Element);
+            int PARANUM=it2->second;
+            orderList.push_back (PARANUM);
+            nodes.pop_front();
+            for(auto i=currentNode->paranode.begin();i!=currentNode->paranode.end();i++){
+                nodes.push_back (*i);
+            }
+
+        }
+    }
+    return orderList;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

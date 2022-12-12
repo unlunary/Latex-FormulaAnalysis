@@ -2,7 +2,7 @@
 #pragma once
 
 #include "opt.h"
-
+#include <algorithm>
 #include <vector>
 #include<map>
 
@@ -67,4 +67,11 @@ void ReplaceLeafToX(bitnode* root,map<string,string>&CONSTANTS);
 
 /*交换律*/
 void SetOrder(map<string,string>&CONSTANTS,vector<string> &ordervec);
+
 void Commutativity(vector<string> ordervec,bitnode* root);
+
+void SetParanumMap(vector<string> ordervec,map<string,int> &toParanum);
+
+void SetOrderMap(vector<string> ordervec,map<string,int> &toOrder);
+
+list<int> print_cmt_tree(map<string,int> toParanum,map<string,int> &toOrder,bitnode* root);
