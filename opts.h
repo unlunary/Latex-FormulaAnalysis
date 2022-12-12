@@ -5,7 +5,7 @@
 #include <map>
 extern map<string,opt> string_to_opt;
 
-
+//extern map<string,string>CONSTANTS;
 
 
 /*存在的问题：

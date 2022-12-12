@@ -375,75 +375,67 @@ void SetConstants(map<string,string>&CONSTANTS){
     CONSTANTS.insert(pair<string,string>("TAU","\\tau"));
 }
 
-//再检查一下，常量/变量的单字符输入，框架参照交换律
 void ReplaceLeafToX(bitnode* root,map<string,string>&CONSTANTS){
-    list<bitnode*>nodes;
-    for(auto i=root->paranode.begin();i!=root->paranode.end();i++){
-        bitnode* currentNode=*i;
-        bool is_opt=0;
-        bool is_constant=0;
-        for(int j=0;j<21;j++){
-            if(currentNode->Element==opts[j].getOptString()){
-                is_opt=1;
-                ReplaceLeafToX(currentNode,CONSTANTS);
-                break;
-            }
+    bool root_is_opt=0;
+    for(int i=0;i<21;i++) {
+        if (root->Element == opts[i].getOptString ()){
+            root_is_opt=1;
+            break;
         }
-        if(is_opt==0){//不为操作符
-            for(auto j=CONSTANTS.begin();j!=CONSTANTS.end();j++){
-
-                if(currentNode->Element.find(j->second,0)!=string::npos){
-                    is_constant=1;
-                    currentNode->Element=j->second;
+    }
+    if(root_is_opt==1){
+        list<bitnode*>nodes;
+        for(auto i=root->paranode.begin();i!=root->paranode.end();i++){
+            bitnode* currentNode=*i;
+            bool is_opt=0;
+            bool is_constant=0;
+            for(int j=0;j<21;j++){
+                if(currentNode->Element==opts[j].getOptString()){
+                    is_opt=1;
+                    ReplaceLeafToX(currentNode,CONSTANTS);
                     break;
                 }
             }
-            if(is_constant==0){
-                currentNode->Element="X";
+            if(is_opt==0){//不为操作符
+                for(auto j=CONSTANTS.begin();j!=CONSTANTS.end();j++){
+
+                    if(currentNode->Element.find(j->second,0)!=string::npos){
+                        is_constant=1;
+                        currentNode->Element=j->second;
+                        break;
+                    }
+                }
+                if(is_constant==0){
+                    currentNode->Element="X";
+                }
             }
+            nodes.push_back(currentNode);
         }
-        nodes.push_back(currentNode);
+        root->paranode=nodes;
     }
-    root->paranode=nodes;
 }
 
 
 /*步骤三：交换律*/
-
-//排序规则是否符合要求？
-void sort_string(string *in_array, int n, string *out_array)
-{
-    vector<string> strArray;
-    int i,j = 0;
-    for (int i = 0; i < n; i++)
-    {
-        strArray.push_back(in_array[i]);
-    }
-    sort(strArray.begin(), strArray.end());
-    vector<string>::iterator st;
-    for (st = strArray.begin(); st != strArray.end(); st++)
-    {
-        //cout << *st << endl;//打印结果
-        out_array[j++] = *st;
-    }
-}
-
-//分段重排。明天再写
-void SetOrder(map<string,string>&CONSTANTS){//vector<map<string,int>>ordervector
-    string symbols_ini[28],symbols[28];
-    int i=0;
-    for(i=0;i<21;i++){
-        symbols_ini[i]=opts[i].getOptString();
-    }
+void SetOrder(map<string,string>&CONSTANTS,vector<string> &ordervec){
     for(auto it=CONSTANTS.begin();it!=CONSTANTS.end();it++){
-        symbols_ini[i++]=it->second;
+        ordervec.push_back(it->second);
     }
-    symbols_ini[27]="X";
-    sort_string(symbols_ini,28,symbols);
+    sort(ordervec.begin(),ordervec.end());
 
+    ordervec.push_back("X");
+
+    vector<string> vec_tmp;
+    for(int i =0;i<21;i++){
+        vec_tmp.push_back(opts[i].getOptString());
+    }
+    sort(vec_tmp.begin(),vec_tmp.end());
+    for(int i =0;i<21;i++){
+        ordervec.push_back(vec_tmp[i]);
+    }
 }
 
-void Commutativity(string *symbols,bitnode* root){
+void Commutativity(vector<string> ordervec,bitnode* root){//string *symbols
     bool is_opt=0;
     for(int i=0;i<21;i++){
         if(root->Element==opts[i].getOptString()){
@@ -456,7 +448,7 @@ void Commutativity(string *symbols,bitnode* root){
         for(int j=0;j<28;j++){
             for(auto i=root->paranode.begin();i!=root->paranode.end();i++){
                 bitnode* currentNode=*i;
-                if(symbols[j]==currentNode->Element){
+                if(ordervec[j]==currentNode->Element){
                     nodes.push_back(currentNode);
                 }
             }
@@ -464,7 +456,7 @@ void Commutativity(string *symbols,bitnode* root){
         root->paranode=nodes;
     }
     for(auto i=root->paranode.begin();i!=root->paranode.end();i++){
-        Commutativity(symbols,*i);
+        Commutativity(ordervec,*i);
     }
 }
 

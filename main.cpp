@@ -8,7 +8,6 @@ map<string,string> resAndSrc;
 map<string,opt> string_to_opt;
 
 
-
 int main()
 {
 	SetPriority();
@@ -36,7 +35,11 @@ int main()
     ReplaceLeafToX(root,CONSTANTS);
     cout<<"T-root"<<root->Element<<endl;
 
-    SetOrder(CONSTANTS);
+    //交换律
+    vector<string> ordervec;
+    SetOrder(CONSTANTS,ordervec);
+    Commutativity(ordervec,root);
+    cout<<"T-root"<<root->Element<<endl;
 
     /*fortest:
 	 * $\alpha$
