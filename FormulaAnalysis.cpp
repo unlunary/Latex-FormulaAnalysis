@@ -535,9 +535,83 @@ list<string> PrintTree(bitnode* root,map<string,int> toParanum){
             index.splice(index.end(),temp);
             index.push_back ("}");
         }
+
+
+
     }
     return index;
 }
+
+void PrintIndexes(bitnode *root,map<string,int> toParanum){
+    bool is_opt=0;
+    opt currentOpt;
+    for(int i=0;i<21;i++){
+        if(root->Element==opts[i].getOptString()){
+            is_opt=1;
+            currentOpt=opts[i];
+            break;
+        }
+    }
+    if(currentOpt.isCommutative()==1&&currentOpt.isAssociative()==1){
+        int sum=root->paranode.size();
+        vector<int>nums;
+        for(int i=0;i<sum;i++){
+            nums.push_back(i);
+        }
+        Subset subset;
+        vector<vector<int>> ans_ini=subset.subsets (nums);
+        vector<vector<int>> ans;//保存了各组兄弟公式树的序号
+        for(auto it=ans_ini.begin();it!=ans_ini.end();it++){
+            vector<int> sub_ans=*it;
+            if(sub_ans.size()>1){
+                ans.push_back (sub_ans);
+            }
+        }
+        for(auto i=ans.begin();i!=ans.end();i++){//ans中包含多组子树序号
+            vector<int> sub_ans=*i;
+            bitnode * newroot=new bitnode;//新的公式树
+            newroot->Element=root->Element;
+            for(auto itt=sub_ans.begin();itt!=sub_ans.end();itt++){//遍历该组子树的序号，将序号对应的子树插入newroot的paranode
+                int tree_num=*itt;
+                list<bitnode*>::iterator itr=root->paranode.begin();
+                if(tree_num==0){
+                    newroot->paranode.push_back (*itr);
+                }
+                else{
+                    for(int j=0;j<tree_num;j++){
+                        itr++;//使其指向序号tree_num指向的子树
+                    }
+                    newroot->paranode.push_back (*itr);
+                }
+            }
+            for(auto itt=sub_ans.begin();itt!=sub_ans.end();itt++){
+                int tree_num=*itt;
+                cout<<"t"<<tree_num+1;
+                if((itt+1)!=sub_ans.end()){
+                    cout<<"+";
+                }
+            }
+            cout<<": ";
+            list<string>indexes=PrintTree(newroot,toParanum);
+            list<string>::const_iterator it=indexes.begin();
+            for(;it!=indexes.end();it++){
+                cout<<*it;
+            }
+            cout<<endl;
+        }
+    }
+    else{
+        list<string>index=PrintTree(root,toParanum);
+        list<string>::const_iterator it=index.begin();
+        for(;it!=index.end();it++){
+            cout<<*it;
+        }
+        cout<<endl;
+    }
+
+}
+
+
 
 
 

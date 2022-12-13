@@ -9,6 +9,8 @@ map<string,string> resAndSrc;
 map<string,opt> string_to_opt;
 
 
+
+
 int main()
 {
     /*初始化*/
@@ -39,20 +41,36 @@ int main()
     cout<<"T-root"<<root->Element<<endl;
 
     //交换律
-    static vector<string> ordervec;
-    static map<string,int> toParanum;
-    static map<string,int> toOrder;
+    vector<string> ordervec;
+    map<string,int> toParanum;
+    map<string,int> toOrder;
     SetOrder(CONSTANTS,ordervec);
     SetParanumMap(ordervec,toParanum);
     SetOrderMap(ordervec,toOrder);
     Commutativity(ordervec,root);
+
+    //打印orderList
     list<int>orderList=print_cmt_tree(toParanum,toOrder,root);
-/*    cout<<endl<<"tree to string：";
-    for(auto i=orderList.begin();i!=orderList.end();i++){
-        cout<<*i;//打印失败？
+    cout<<endl<<"tree to string:";
+    list<int>::const_iterator i=orderList.begin();
+    for(;i!=orderList.end();i++){
+        cout<<*i;
     }
-    cout<<endl;*/
-    PrintTree(root,toParanum);
+    cout<<endl;
+
+    //索引创建
+    list<string>index=PrintTree(root,toParanum);
+    cout<<endl<<"print tree's index:";
+    list<string>::const_iterator it=index.begin();
+    for(;it!=index.end();it++){
+        cout<<*it;
+    }
+    cout<<endl<<endl<<"indexes: "<<endl;
+
+    //兄弟树组合 索引
+    PrintIndexes(root,toParanum);
+
+
 
 
 

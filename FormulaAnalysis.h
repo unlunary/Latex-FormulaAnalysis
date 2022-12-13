@@ -30,6 +30,29 @@ public:
 	testNode *lchild, *rchild;
 };
 
+class Subset {
+public:
+    vector<int> t;
+    vector<vector<int>> ans;
+
+    void dfs(int cur, vector<int> &nums) {
+        if (cur == nums.size()) {
+            ans.push_back(t);
+            return;
+        }
+        t.push_back(nums[cur]);
+        dfs(cur + 1, nums);
+        t.pop_back();
+        dfs(cur + 1, nums);
+    }
+
+    vector<vector<int>> subsets(vector<int> &nums) {
+        dfs(0, nums);
+        //从0开始，nums.size()结束
+        return ans;
+    }
+};
+
 /*解析1*/
 void parenthesesMatching(string &str);
 
@@ -78,3 +101,4 @@ list<int> print_cmt_tree(map<string,int> toParanum,map<string,int> &toOrder,bitn
 
 /*索引创建*/
 list<string> PrintTree(bitnode* root,map<string,int> toParanum);
+void PrintIndexes(bitnode *root,map<string,int> toParanum);
