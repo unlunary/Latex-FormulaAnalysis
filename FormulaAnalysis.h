@@ -56,6 +56,8 @@ public:
 /*解析1*/
 void parenthesesMatching(string &str);
 
+void prefixMatching(string &str);
+
 string resMatching(string str);
 
 bitnode *CreateFormulaTree(string str);
@@ -71,6 +73,8 @@ void markPriority(const string &str);
 
 /*BASIC*/
 void SetPriority();
+
+void SetPriority2();//更改了前缀的优先级
 
 void SetConstants(map<string,string>&CONSTANTS);
 

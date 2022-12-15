@@ -5,7 +5,7 @@
 int resSign=0;
 
 map<string,string> resAndSrc;
-
+map<string,string>CONSTANTS;
 map<string,opt> string_to_opt;
 
 
@@ -14,16 +14,20 @@ map<string,opt> string_to_opt;
 int main()
 {
     /*初始化*/
-	SetPriority();
-    map<string,string>CONSTANTS;
+	SetPriority2();
     SetConstants(CONSTANTS);
 
 	string symbolstring;
-    symbolstring="${(4+((\\alpha+2)+3))}\\times{3}+{(4+((1+\\beta)+3))}$";
+    symbolstring="\\frac{(\\alpha+\\beta)+\\pi}{2+3}";
+    //操作数为2/嵌套前缀：{\frac{{\alpha}\times{\frac{2}{3}}}{2+3}}+{\frac{(\alpha+\beta)+\pi}{2+3}}
+    //有操作数为1的前缀：{\frac{{\alpha}\times{(\sqrt[3]{2}+5)}}{2+3}}+{\frac{(\alpha+\beta)+\pi}{2+3}}
     cout<<"symbolstring:"<<symbolstring<<endl;
 
-    //step1:将含有括号的部分转化为"res+i"并放入res中，使symbolstring中不含有任何“()”
+    //step1:括号匹配-将含有括号的部分转化为"res+i"并放入res中，使symbolstring中不含有任何“()”
     parenthesesMatching(symbolstring);
+
+    //补充：前缀匹配-将含有前缀的子串以相同方式处理
+    prefixMatching(symbolstring);
 
     //step2：取symbolstring中最低优先级的部分递归成为根结点
 	bitnode *root;
@@ -49,7 +53,7 @@ int main()
     SetOrderMap(ordervec,toOrder);
     Commutativity(ordervec,root);
 
-    //打印orderList
+    //打印orderList,操作符的参数数量是n还是1/2？
     list<int>orderList=print_cmt_tree(toParanum,toOrder,root);
     cout<<endl<<"tree to string:";
     list<int>::const_iterator i=orderList.begin();
@@ -75,10 +79,15 @@ int main()
 
 
     /*fortest:
-	 * $\alpha$
-	 * $\alpha+\beta+\pi$
+     * SUCCEED:
+     * ${(4+((\alpha+2)+3))}\times{3}+{(4+((1+\beta)+3))}$
      * ${(4+((1+2)+3))}\times{3}+{(4+((1+2)+3))}$
-	 * $\frac{(\alpha+\beta)+\pi}{2+3}$ FAILED
+     *
+     * FAILED:
+	 * $\alpha$,${3}$,${a}$ //流程需符合解析要求
+     * ${\frac{{\alpha}\times{(\sqrt[3]{2}+5)}}{2+3}}+{\frac{(\alpha+\beta)+\pi}{2+3}}$
+	 * $\alpha+\beta+\pi$
+	 * $\frac{(\alpha+\beta)+\pi}{2+3}$ FAILED HERE
 	 * $\frac{{\alpha}*{(\beta+\pi})}{2+3}$
 	 * $(2+(\alpha+\beta))\times\pi$
 	 * 天生需要括号的运算符优先级不需要提高?

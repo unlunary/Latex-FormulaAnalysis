@@ -64,6 +64,7 @@ void markPriority(const string &str)
 	}
 }
 
+
 void parenthesesMatching(string &str){//vector<string> &res,,map<string,string> &resAndSrc
     for(int i=0;i<str.length();i++){//length是不是边处理边变化？
         string replaceSign="res";
@@ -92,8 +93,102 @@ void parenthesesMatching(string &str){//vector<string> &res,,map<string,string> 
     }
 }
 
+//"{\\frac{{\\alpha}\\times{res0}}{2+3}}+{\\frac{res1+\\pi}{2+3}}"
+//"\\frac{{\\alpha}\\times{res0}}{2+3}"
+void prefixMatching(string &str)
+{
+    for(int i=0;i<21;i++)
+    {
+        string replaceSign="res";
+        int pos=0;
+        if(opts[i].isPrior()==0&&str.find(opts[i].getOptString(),0)!=string::npos)
+        {//在str中找到前缀运算符
+            pos=str.find(opts[i].getOptString(),0);
+            int pos_begin1=0,pos_end1=0,pos_begin2=0,pos_end2=0;
+            pos_begin1=pos+opts[i].getOptString().length();
+            if(str[pos_begin1]=='{')
+            {
+                int depth=-1;
+                for(int j=pos_begin1+1;j<str.length();j++)
+                {
+                    if(str[j]=='{')
+                    {
+                        depth--;
+                    }
+                    else if(str[j]=='}')
+                    {
+                        depth++;
+                    }
+                    if(depth==0)
+                    {//前缀的第一个参数识别完成
+                        pos_end1=j;
+                        if(opts[i].getParaNum()==1){
+                            //"(\\sqrt[3]{2}+5)"？
+                            //需要参照下面修复，参数/操作符，在树中如何排列？将其以怎样的格式返回？
+                            if(pos_end1-pos+1==str.length()){//symbolString为单纯的前缀表达式，且参数数量为1
+                                return;
+                            }
+                            string s=str.substr(pos,pos_end1-pos+1);
+                            replaceSign+=to_string(resSign);
+                            resSign++;
+                            resAndSrc.insert(pair<string,string>(replaceSign,s));
+                            str.replace(pos,pos_end1-pos+1,replaceSign);
+                        }
+                        else if(opts[i].getParaNum()==2)
+                        {//开始截取第二个参数
+                            pos_begin2=pos_end1+1;
+                            if(str[pos_begin2]=='{')
+                            {
+                                depth=-1;
+                            }
+                            for(int k=pos_begin2+1;k<str.length();k++)
+                            {
+                                if(str[k]=='{')
+                                {
+                                    depth--;
+                                }
+                                else if(str[k]=='}')
+                                {
+                                    depth++;
+                                }
+                                if(depth==0)
+                                {
+                                    //"\\frac{{\\alpha}\\times{res0}}{2+3}"
+                                    pos_end2=k;
+                                    if(pos_end2-pos+1==str.length()){//symbolString为单纯的前缀表达式，且参数数量为2
+                                        string s1=opts[i].getOptString();
+                                        string s2=str.substr (pos_begin1,pos_end1-pos_begin1+1);
+                                        string s3=str.substr (pos_begin2,pos_end2-pos_begin2+1);
+                                        string s=s2+s1+s3;
+                                        str=s;
+                                        return;
+                                    }
+                                    //string s=str.substr(pos,pos_end2-pos+1);
+                                    string s1=opts[i].getOptString();
+                                    string s2=str.substr (pos_begin1,pos_end1-pos_begin1+1);
+                                    string s3=str.substr (pos_begin2,pos_end2-pos_begin2+1);
+                                    string s=s2+s1+s3;
+                                    replaceSign+=to_string(resSign);
+                                    resSign++;
+                                    resAndSrc.insert(pair<string,string>(replaceSign,s));
+                                    str.replace (pos,pos_end2-pos+1,replaceSign);
+                                    break;
+                                }
+                            }
+                        }
+                        break;//参数识别完成，继续识别下一个前缀
+                    }
+                }
+            }
+            i=-1;
+        }
+    }
+}
+
+//应该是优先处理括号，再处理前缀吧？
+//编写一些 单独前缀，括号+前缀的样例
 string resMatching(string str){
-    //先判断是否有运算符
+    //若仍有运算符，则仍然常规生成树。与第三种情况的区别：(e.g. res+3)。以防进入情况2
     for (int i = 0; i < 21; i++)
     {
         if (str.find(opts[i].getOptString(), 0) != string::npos)
@@ -101,7 +196,7 @@ string resMatching(string str){
             return str;
         }
     }
-    //以下仅含res或其他常量/变量符号
+    //仅含res
     if(str.find("res",0)!=string::npos){
         int pos=str.find("res",0);
         string map_res;//=map_res.substr(pos, map_res.length() - 2);
@@ -115,19 +210,31 @@ string resMatching(string str){
                 map_res=str.substr(pos,str.length()-pos);
             }
         }
+
         map<string,string>::iterator it;
         it=resAndSrc.find(map_res);
         string map_src=it->second;//取出该res对应的含括号的原公式
-        map_src=map_src.substr(1, map_src.length() - 2);
-        parenthesesMatching(map_src);
+        if(map_src[0]=='('&&map_src[map_src.length()-1]==')'){//去除最外层括号。比如将{res0}转化为{res1+4}
+            map_src=map_src.substr(1, map_src.length() - 2);
+            parenthesesMatching(map_src);
+        }
+        for(int i=0;i<21;i++){
+            if(opts[i].isPrior()==0&&str.find(opts[i].getOptString(),0)!=string::npos){
+                prefixMatching(str);
+            }
+        }
+
+
         return '{'+map_src+'}';
     }
+    //仅含其他常量/变量符号
     else{
         return str;
     }
 }
 
 //其余公式的合法性可在解析时检查，抛出异常即可
+//先处理括号,再处理运算符优先级
 bitnode *CreateFormulaTree(string str)
 {
     bitnode *T = new bitnode;
@@ -137,16 +244,12 @@ bitnode *CreateFormulaTree(string str)
     opt root;
     for (int i = 0; i < 21; i++)
     {
-        //step1：先处理括号：
-
-        //step2：再处理运算符优先级：
         if (str.find(opts[i].getOptString(), 0) != string::npos)
         {
             int pos_findrpt = 0;
             /*针对测试示例2*/
             while ((pos_findrpt = str.find(opts[i].getOptString(), pos_findrpt)) != string::npos)
             {
-                //cout<<"pos_findpt "<<optNum<<" : "<<pos_findrpt<<endl;
                 pos_findrpt++;
                 optNum++;
             }
@@ -174,8 +277,6 @@ bitnode *CreateFormulaTree(string str)
         //先判断它的类型
         leftstr = resMatching(leftstr);
         rightstr = resMatching(rightstr);
-/*        parenthesesMatching(leftstr);
-        parenthesesMatching(rightstr);*/
         T->lchild = CreateFormulaTree(leftstr);
         T->rchild = CreateFormulaTree(rightstr);
         return T;
@@ -215,6 +316,7 @@ void func(bitnode *root){//错误的递归函数，先留着
     }
 }
 
+//将前缀运算符的优先级设置为中缀MAX+1
 void SetPriority()
 {
 	int MaxMidPriority = 0;
@@ -235,6 +337,29 @@ void SetPriority()
 	}
 	//DEGREE的priority暂时处理为前缀
 	DEGREE.setPriority(FrtPriority);
+}
+
+//将前缀运算符的优先级设置为中缀MIN-1
+void SetPriority2()
+{
+    int MinMidPriority = 0;
+    for (int i = 0; i < 21; i++)
+    {
+        if (opts[i].getPriority() < MinMidPriority)
+        {
+            MinMidPriority = opts[i].getPriority();
+        }
+    }
+    int FrtPriority = MinMidPriority - 1;
+    for (int i = 0; i < 21; i++)
+    {
+        if (opts[i].isPrior() == 0)
+        {
+            opts[i].setPriority(FrtPriority);
+        }
+    }
+    //DEGREE的priority暂时处理为前缀
+    DEGREE.setPriority(FrtPriority);
 }
 
 //将opt的string表达与类opt映射
@@ -374,6 +499,7 @@ void SetConstants(map<string,string>&CONSTANTS){
     CONSTANTS.insert(pair<string,string>("TAU","\\tau"));
 }
 
+//注意：数字也处理为X了，若有时间可修复
 void ReplaceLeafToX(bitnode* root,map<string,string>&CONSTANTS){
     bool root_is_opt=0;
     for(int i=0;i<21;i++) {
