@@ -107,7 +107,7 @@ void prefixMatching(string &str)
             pos=str.find(opts[i].getOptString(),0);
             int pos_begin1=0,pos_end1=0,pos_begin2=0,pos_end2=0;
             pos_begin1=pos+opts[i].getOptString().length();
-            if(str[pos_begin1]=='{')
+            if(str[pos_begin1]=='{'||str[pos_begin1]=='[')
             {
                 if(opts[i].getParaNum()==1){
                     is_disposed=0;
@@ -119,7 +119,7 @@ void prefixMatching(string &str)
                     {
                         depth--;
                     }
-                    else if(str[j]=='}')
+                    else if(str[j]=='}'||str[j]==']')
                     {
                         depth++;
                     }
@@ -127,8 +127,6 @@ void prefixMatching(string &str)
                     {//前缀的第一个参数识别完成
                         pos_end1=j;
                         if(opts[i].getParaNum()==1){
-                            //"(\\sqrt[3]{2}+5)"？
-                            //需要参照下面修复，参数/操作符，在树中如何排列？将其以怎样的格式返回？
                             if(pos_end1-pos+1==str.length()){//symbolString为单纯的前缀表达式，且参数数量为1
                                 return;
                             }
@@ -159,19 +157,14 @@ void prefixMatching(string &str)
                                 if(depth==0)
                                 {
                                     pos_end2=k;
-                                    if(pos_end2-pos+1==str.length()){//symbolString为单纯的前缀表达式，且参数数量为2
-                                        string s1=opts[i].getOptString();
-                                        string s2=str.substr (pos_begin1,pos_end1-pos_begin1+1);
-                                        string s3=str.substr (pos_begin2,pos_end2-pos_begin2+1);
-                                        string s=s2+s1+s3;
-                                        str=s;
-                                        return;
-                                    }
-                                    //string s=str.substr(pos,pos_end2-pos+1);
                                     string s1=opts[i].getOptString();
                                     string s2=str.substr (pos_begin1,pos_end1-pos_begin1+1);
                                     string s3=str.substr (pos_begin2,pos_end2-pos_begin2+1);
                                     string s=s2+s1+s3;
+                                    str=s;
+                                    if(pos_end2-pos+1==str.length()){//symbolString为单纯的前缀表达式，且参数数量为2
+                                        break;
+                                    }
                                     replaceSign+=to_string(resSign);
                                     resSign++;
                                     resAndSrc.insert(pair<string,string>(replaceSign,s));
