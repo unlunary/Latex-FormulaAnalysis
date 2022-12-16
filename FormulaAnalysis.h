@@ -85,7 +85,7 @@ void set_string_to_opt();
 
 void set_asstree(bitnode *root);
 
-void Associativity(bitnode *root);
+void Associativity(bitnode *&root);
 
 void print_ass_tree(bitnode *root);
 
@@ -101,8 +101,8 @@ void SetParanumMap(vector<string> ordervec,map<string,int> &toParanum);
 
 void SetOrderMap(vector<string> ordervec,map<string,int> &toOrder);
 
-list<int> print_cmt_tree(map<string,int> toParanum,map<string,int> &toOrder,bitnode* root);
+list<int> print_cmt_tree(map<string,int> toParanum,map<string,int> &toOrder,bitnode* &root);
 
 /*索引创建*/
-list<string> PrintTree(bitnode* root,map<string,int> toParanum);
-void PrintIndexes(bitnode *root,map<string,int> toParanum);
+list<string> PrintTree(bitnode* &root,map<string,int> toParanum);
+void PrintIndexes(bitnode *&root,map<string,int> toParanum);

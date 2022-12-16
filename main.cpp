@@ -18,7 +18,7 @@ int main()
     SetConstants(CONSTANTS);
 
 	string symbolstring;
-    symbolstring="\\frac{(\\alpha+\\beta)+\\pi}{2+3}";
+    symbolstring="{\\frac{{\\alpha}\\times{\\frac{2}{3}}}{2+3}}+{\\frac{(\\alpha+\\beta)+\\pi}{2+3}}";
     //操作数为2/嵌套前缀：{\frac{{\alpha}\times{\frac{2}{3}}}{2+3}}+{\frac{(\alpha+\beta)+\pi}{2+3}}
     //有操作数为1的前缀：{\frac{{\alpha}\times{(\sqrt[3]{2}+5)}}{2+3}}+{\frac{(\alpha+\beta)+\pi}{2+3}}
     cout<<"symbolstring:"<<symbolstring<<endl;
@@ -82,6 +82,9 @@ int main()
      * SUCCEED:
      * ${(4+((\alpha+2)+3))}\times{3}+{(4+((1+\beta)+3))}$
      * ${(4+((1+2)+3))}\times{3}+{(4+((1+2)+3))}$
+     * 单前缀示例：\frac{(\alpha+\beta)+\pi}{2+3}
+     * {\frac{{\alpha}\times{\frac{2}{3}}}{2+3}}+{\frac{(\alpha+\beta)+\pi}{2+3}}
+     *
      *
      * FAILED:
 	 * $\alpha$,${3}$,${a}$ //流程需符合解析要求

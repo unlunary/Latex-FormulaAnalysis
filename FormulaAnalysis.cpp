@@ -103,6 +103,7 @@ void prefixMatching(string &str)
         int pos=0;
         if(opts[i].isPrior()==0&&str.find(opts[i].getOptString(),0)!=string::npos)
         {//在str中找到前缀运算符
+            bool is_disposed=1;//默认已经处理过
             pos=str.find(opts[i].getOptString(),0);
             int pos_begin1=0,pos_end1=0,pos_begin2=0,pos_end2=0;
             pos_begin1=pos+opts[i].getOptString().length();
@@ -139,6 +140,7 @@ void prefixMatching(string &str)
                             pos_begin2=pos_end1+1;
                             if(str[pos_begin2]=='{')
                             {
+                                is_disposed=0;
                                 depth=-1;
                             }
                             for(int k=pos_begin2+1;k<str.length();k++)
@@ -147,6 +149,10 @@ void prefixMatching(string &str)
                                 {
                                     depth--;
                                 }
+                                /*else if(str[k]!='{'){//相当于找到一个已经处理过的frac,无需重复处理，但需使i++
+                                    is_disposed=1;
+                                    break;
+                                }*/
                                 else if(str[k]=='}')
                                 {
                                     depth++;
@@ -180,7 +186,7 @@ void prefixMatching(string &str)
                     }
                 }
             }
-            i=-1;
+            if(is_disposed==0){i=-1;}
         }
     }
 }
@@ -214,13 +220,17 @@ string resMatching(string str){
         map<string,string>::iterator it;
         it=resAndSrc.find(map_res);
         string map_src=it->second;//取出该res对应的含括号的原公式
+
+        //parenthesesMatching(map_src);
+        //prefixMatching(str);
+
         if(map_src[0]=='('&&map_src[map_src.length()-1]==')'){//去除最外层括号。比如将{res0}转化为{res1+4}
             map_src=map_src.substr(1, map_src.length() - 2);
-            parenthesesMatching(map_src);
         }
+        parenthesesMatching(map_src);
         for(int i=0;i<21;i++){
-            if(opts[i].isPrior()==0&&str.find(opts[i].getOptString(),0)!=string::npos){
-                prefixMatching(str);
+            if(opts[i].isPrior()==0&&map_src.find(opts[i].getOptString(),0)!=string::npos){
+                prefixMatching(map_src);
             }
         }
 
@@ -282,6 +292,9 @@ bitnode *CreateFormulaTree(string str)
         return T;
     }
 }
+
+
+
 
 void func(bitnode *root){//错误的递归函数，先留着
     if(root){//该树非空
@@ -369,7 +382,7 @@ void set_string_to_opt(){
     }
 }
 
-//将左右子树插入其list<bitnode*>中
+//将所有结点的左右子树插入其list<bitnode*>中
 void set_asstree(bitnode *root){
     if(root){
         if(root->lchild!=NULL){
@@ -384,109 +397,86 @@ void set_asstree(bitnode *root){
     }
 }
 
-void Associativity(bitnode *root){
-
-    list<bitnode*> nodes;
-    nodes.push_back (root);//根节点初始化nodes链表
-    bitnode * currentNode;
-
-    auto end=nodes.begin();
-    for(auto it=nodes.begin();it!=nodes.end();it++)
+void Associativity(bitnode* &root){
+    bool root_is_opt=0;
+    for(int i=0;i<21;i++) {
+        if (root->Element == opts[i].getOptString ()){
+            root_is_opt=1;
+            break;
+        }
+    }
+    if(root_is_opt==0){
+        return;
+    }
+    else
     {
-        //取出list中首结点，ele可能为常量符号/运算符
-        list<bitnode*>::iterator it_temp=nodes.begin();
-        currentNode=*it_temp;
-        if(currentNode==NULL){break;}
-
-        opt currentOpt;//当前操作符对象
-        bool currentNode_type=1;//0为操作符，1为常量符号
-        bool is_associative=0;//0,则默认不可结合
-
-        //确定ele类型，若为操作符，则使用map映射
-        for(int i=0;i<21;i++)
+        //对该操作符判断是否符合交换律
+        bitnode * currentNode=new bitnode();
+        list<bitnode*> nodes;//当前函数根节点的新paranode
+        nodes.push_back (root);//根节点初始化nodes链表
+        bool SET_FRONT=0;
+        for(auto it=nodes.begin();it!=nodes.end();it++)
         {
-            if(currentNode->Element==opts[i].getOptString())
+            if(SET_FRONT==1)
             {
-                map<string,opt>::iterator it2;
-                it2=string_to_opt.find(currentNode->Element);
-                currentOpt=it2->second;
-                is_associative=currentOpt.isAssociative();
-                currentNode_type=0;
+                it=nodes.begin();
+                SET_FRONT=0;
+            }
+            /*确认结点的操作符类型及是否可结合*/
+            opt currentOpt;//当前操作符对象
+            bool is_associative=0;//0,则默认不可结合
+            currentNode=*it;
+            map<string,opt>::iterator it2;
+            it2=string_to_opt.find(currentNode->Element);
+            currentOpt=it2->second;
+            is_associative=currentOpt.isAssociative();
+
+            if(is_associative==0)
+            {
+                nodes.pop_front();
                 break;
-            }
-        }
-
-        //根据ele类型进行处理
-        if(currentNode_type==1)
-        {//常量则直接删去
-            nodes.pop_front();
-        }
-        else if(currentNode_type==0&&is_associative==0)
-        {//不可交换操作符
-            nodes.pop_front();
-            //将该操作符的list<paranode>都push进list<nodes>后面
-            for(auto itt=currentNode->paranode.begin();itt!=currentNode->paranode.end();itt++)
-            {
-                nodes.push_back (*itt);
-            }
-        }
-        else{//可交换的操作符
-            auto front=currentNode->paranode.begin();
-            for(auto itt=currentNode->paranode.begin();itt!=currentNode->paranode.end();itt++)
-            {
-                bitnode* subnode=*itt;
-                if(currentNode->Element==subnode->Element)
-                {//若是当前运算符与子树中的运算符相同，则删除子树，并将子树的子树插入当前树结点
-                    currentNode->paranode.splice(itt,subnode->paranode);
-                    currentNode->paranode.erase(itt);
-                    itt=front;
-                }
-                front=itt;
-            }
-            //auto it_copy=it;
-            nodes.splice(it,currentNode->paranode);
-            //nodes.erase(it);
-            //it=it_copy;
-        }
-        end=it;
-    }
-    if(nodes.empty()==0){
-        nodes.erase(end);//看一下nodes
-    }
-    if(root->paranode.empty()==0){
-        root->paranode.clear();
-    }
-    root->paranode=nodes;
-    //cout<<"!T-ele"<<root->Element<<endl;
-    for(auto it=root->paranode.begin();it!=root->paranode.end();it++){
-        Associativity(*it);
-    }
-}
-
-/*多叉树无法中序遍历,大概用不到*/
-void print_ass_tree(bitnode *root){
-    if(root){
-        for(auto it=root->paranode.begin();it!=root->paranode.end();it++){
-            bitnode *currentNODE=*it;
-            bool currentNode_type=1;//0为操作符，1为常量符号
-            //确定ele类型
-            for(int i=0;i<21;i++)
-            {
-                if(currentNODE->Element==opts[i].getOptString())
+                //将该操作符的list<paranode>都push进list<nodes>后面
+                /*for(auto itt=currentNode->paranode.begin();itt!=currentNode->paranode.end();itt++)
                 {
-                    currentNode_type=0;
-                    break;
+                    SET_FRONT=1;
+                    nodes.push_back (*itt);
+                }*/
+            }
+            else//可结合，则需要检测其当前paranode序列是否有与其相同操作符的结点
+            {
+                bool return_FRONT=0;
+                auto front=currentNode->paranode.begin();
+                for(auto itt=currentNode->paranode.begin();itt!=currentNode->paranode.end();itt++)
+                {
+                    bitnode* subnode=*itt;
+                    if(currentNode->Element==subnode->Element)
+                    {
+                        if(*itt==*currentNode->paranode.begin())
+                        {
+                            return_FRONT=1;
+                            currentNode->paranode.splice(itt,subnode->paranode);
+                            currentNode->paranode.erase(itt);
+                            itt=currentNode->paranode.begin();
+                            front=currentNode->paranode.begin();
+                        }
+                        else{
+                            currentNode->paranode.splice(itt,subnode->paranode);
+                            currentNode->paranode.erase(itt);
+                            itt=front;
+                        }
+                    }
+                    front=itt;
                 }
-            }
-            if(currentNode_type==0){
-                print_ass_tree(*it);
-            }
 
-            else{
-                //cout<<currentNODE->Element<<root->Element;
             }
         }
+        root->paranode=currentNode->paranode;
+        root->paranum=currentNode->paranode.size();
+        for(auto it=root->paranode.begin();it!=root->paranode.end();it++){
+            Associativity(*it);
+        }
     }
+
 }
 
 /*步骤四：叶子结点替换*/
@@ -604,22 +594,38 @@ void SetOrderMap(vector<string> ordervec,map<string,int> &toOrder){
     }
 }
 
-list<int> print_cmt_tree(map<string,int> toParanum,map<string,int> &toOrder,bitnode* root){
+//序：6个变量符号(内部字母序)>X>操作符序(内部字母序)，使用SetOrder函数设定序
+list<int> print_cmt_tree(map<string,int> toParanum,map<string,int> &toOrder,bitnode* &root){
     list<bitnode*>nodes;
     list<int>orderList;//记录结点order和paranum
     if(root){
         nodes.push_back (root);
         while(!nodes.empty()){
+            //第一步：push该操作符在“toOrdervec”中的顺序
             bitnode * currentNode=nodes.front();
             map<string,int>::iterator it;
             it=toOrder.find(currentNode->Element);
             int ORDER=it->second;
             orderList.push_back (ORDER);
 
-            map<string,int>::iterator it2;
-            it2=toParanum.find(currentNode->Element);
-            int PARANUM=it2->second;
-            orderList.push_back (PARANUM);
+            //第二步：push符号对应的操作数paranum
+            bool is_opt=0;
+            for(int i=0;i<21;i++){
+                if(currentNode->Element==opts[i].getOptString()){
+                    is_opt=1;
+                    break;
+                }
+            }
+            if(is_opt==1){
+                orderList.push_back (currentNode->paranum);
+            }
+            else{
+                map<string,int>::iterator it2;
+                it2=toParanum.find(currentNode->Element);
+                int PARANUM=it2->second;
+                orderList.push_back (PARANUM);
+            }
+
             nodes.pop_front();
             for(auto i=currentNode->paranode.begin();i!=currentNode->paranode.end();i++){
                 nodes.push_back (*i);
@@ -630,7 +636,7 @@ list<int> print_cmt_tree(map<string,int> toParanum,map<string,int> &toOrder,bitn
     return orderList;
 }
 
-list<string> PrintTree(bitnode* root,map<string,int> toParanum){
+list<string> PrintTree(bitnode* &root,map<string,int> toParanum){
     list<string>index;
     bool is_opt=0;
     for(int i=0;i<21;i++){
@@ -646,11 +652,17 @@ list<string> PrintTree(bitnode* root,map<string,int> toParanum){
         index.push_back (root->Element);
         index.push_back ("(");
 
-        bitnode *currentNode=root;
-        map<string, int>::iterator it2;
+        bitnode *currentNode=new bitnode();
+        currentNode=root;
+
+        //选项1：push操作符原操作数
+        /*map<string, int>::iterator it2;
         it2 = toParanum.find (currentNode->Element);
         int PARANUM = it2->second;
-        index.push_back (to_string (PARANUM));
+        index.push_back (to_string (PARANUM));*/
+
+        //选项2：push该结点实际的操作数
+        index.push_back(to_string(currentNode->paranum));
 
         index.push_back (")");
 
@@ -668,7 +680,7 @@ list<string> PrintTree(bitnode* root,map<string,int> toParanum){
     return index;
 }
 
-void PrintIndexes(bitnode *root,map<string,int> toParanum){
+void PrintIndexes(bitnode *& root,map<string,int> toParanum){
     bool is_opt=0;
     opt currentOpt;
     for(int i=0;i<21;i++){
@@ -710,6 +722,7 @@ void PrintIndexes(bitnode *root,map<string,int> toParanum){
                     newroot->paranode.push_back (*itr);
                 }
             }
+            newroot->paranum=newroot->paranode.size();
             for(auto itt=sub_ans.begin();itt!=sub_ans.end();itt++){
                 int tree_num=*itt;
                 cout<<"t"<<tree_num+1;
@@ -726,6 +739,7 @@ void PrintIndexes(bitnode *root,map<string,int> toParanum){
             cout<<endl;
         }
     }
+    //该结点不符合交换律和结合律：
     else{
         list<string>index=PrintTree(root,toParanum);
         list<string>::const_iterator it=index.begin();
