@@ -18,7 +18,7 @@ opt FRAC("\\frac", 0, 2, 0, 0, 0);
 //根指数为2可不写，此时ParaNum=1
 opt SQRT("\\sqrt", 0, 2, 0, 0, 0);
 //?负号，解析时如何与minus区分？
-opt NEGSIGN("-", 0, 1, 0, 0, 0);
+opt NEGSIGN("|-", 0, 1, 0, 0, 0);
 
 //三角函数
 opt SIN("\\sin", 0, 1, 0, 0, 0);
@@ -35,7 +35,7 @@ opt ADD("+", 1, 2, 1, 1, 5);
 opt MINUS("-", 1, 2, 0, 0, 5);
 opt MULTIPLY("\\times", 1, 2, 1, 1, 6);
 opt DIVIDE("\\div", 1, 2, 0, 0, 6);
-opt POWER("^", 1, 2, 0, 0, 7);
+opt POWER("^", 1, 2, 0, 0, 7);//{2}^{3}
 
 opt NOT("\\neg", 0, 1, 0, 0, 0);
 //逻辑运算符:与/或/异或/蕴含/等价

@@ -18,8 +18,7 @@ int main()
     SetConstants(CONSTANTS);
 
 	string symbolstring;
-    symbolstring="{\\frac{{\\alpha}\\times{\\frac{2}{3}}}{2+3}}+{\\frac{(\\alpha+\\beta)+\\pi}{2+3}}";
-    //操作数为2/嵌套前缀：{\frac{{\alpha}\times{\frac{2}{3}}}{2+3}}+{\frac{(\alpha+\beta)+\pi}{2+3}}
+    symbolstring="{\\tan{(\\alpha-\\beta)}}\\implies{\\frac{{\\tan{\\alpha}}-{\\tan{\\beta}}}{{1}+{{\\tan{\\alpha}}\\times{\\tan{\\beta}}}}}";
     //有操作数为1的前缀：{\frac{{\alpha}\times{(\sqrt[3]{2}+5)}}{2+3}}+{\frac{(\alpha+\beta)+\pi}{2+3}}
     cout<<"symbolstring:"<<symbolstring<<endl;
 
@@ -84,6 +83,7 @@ int main()
      * ${(4+((1+2)+3))}\times{3}+{(4+((1+2)+3))}$
      * 单前缀示例：\frac{(\alpha+\beta)+\pi}{2+3}
      * {\frac{{\alpha}\times{\frac{2}{3}}}{2+3}}+{\frac{(\alpha+\beta)+\pi}{2+3}}
+     * \sin{(\alpha-\beta)}\implies{{\sin{\alpha}}\times{\cos{\beta}}-{{\cos{\alpha}\times{\sin{\beta}}}}}
      *
      *
      * FAILED:

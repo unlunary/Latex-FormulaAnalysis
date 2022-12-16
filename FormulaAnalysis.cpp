@@ -109,6 +109,9 @@ void prefixMatching(string &str)
             pos_begin1=pos+opts[i].getOptString().length();
             if(str[pos_begin1]=='{')
             {
+                if(opts[i].getParaNum()==1){
+                    is_disposed=0;
+                }
                 int depth=-1;
                 for(int j=pos_begin1+1;j<str.length();j++)
                 {
@@ -149,17 +152,12 @@ void prefixMatching(string &str)
                                 {
                                     depth--;
                                 }
-                                /*else if(str[k]!='{'){//相当于找到一个已经处理过的frac,无需重复处理，但需使i++
-                                    is_disposed=1;
-                                    break;
-                                }*/
                                 else if(str[k]=='}')
                                 {
                                     depth++;
                                 }
                                 if(depth==0)
                                 {
-                                    //"\\frac{{\\alpha}\\times{res0}}{2+3}"
                                     pos_end2=k;
                                     if(pos_end2-pos+1==str.length()){//symbolString为单纯的前缀表达式，且参数数量为2
                                         string s1=opts[i].getOptString();
@@ -188,6 +186,7 @@ void prefixMatching(string &str)
             }
             if(is_disposed==0){i=-1;}
         }
+
     }
 }
 
@@ -282,13 +281,20 @@ bitnode *CreateFormulaTree(string str)
     else
     {
         T = CreateBitree(root.getOptString());
-        string leftstr=str.substr(0, rootPosition);
-        string rightstr=str.substr(rootPosition + root.getOptString().length(), str.length());
-        //先判断它的类型
-        leftstr = resMatching(leftstr);
-        rightstr = resMatching(rightstr);
-        T->lchild = CreateFormulaTree(leftstr);
-        T->rchild = CreateFormulaTree(rightstr);
+        if(root.isPrior()==1||root.getParaNum()==2){
+            string leftstr=str.substr(0, rootPosition);
+            string rightstr=str.substr(rootPosition + root.getOptString().length(), str.length());
+            //先判断它的类型
+            leftstr = resMatching(leftstr);
+            rightstr = resMatching(rightstr);
+            if(leftstr!=""){T->lchild = CreateFormulaTree(leftstr);}
+            if(rightstr!=""){T->rchild = CreateFormulaTree(rightstr);}
+        }
+        else{
+            string rightstr=str.substr(rootPosition + root.getOptString().length(), str.length());
+            rightstr = resMatching(rightstr);
+            if(rightstr!=""){T->rchild = CreateFormulaTree(rightstr);}
+        }
         return T;
     }
 }
@@ -552,13 +558,15 @@ void SetOrder(map<string,string>&CONSTANTS,vector<string> &ordervec){
 
 void Commutativity(vector<string> ordervec,bitnode* root){//string *symbols
     bool is_opt=0;
+    bool is_commutative=0;
     for(int i=0;i<21;i++){
         if(root->Element==opts[i].getOptString()){
             is_opt=1;
+            is_commutative=opts[i].isCommutative();
             break;
         }
     }
-    if(is_opt==1){
+    if(is_opt==1&&is_commutative==1){
         list<bitnode*>nodes;
         for(int j=0;j<28;j++){
             for(auto i=root->paranode.begin();i!=root->paranode.end();i++){
