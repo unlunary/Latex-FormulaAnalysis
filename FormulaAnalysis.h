@@ -70,7 +70,6 @@ void split(string str, const string &pattern, vector<string> &result);
 void markPriority(const string &str);
 
 
-
 /*BASIC*/
 void SetPriority();
 

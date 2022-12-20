@@ -64,8 +64,7 @@ void markPriority(const string &str)
 	}
 }
 
-
-void parenthesesMatching(string &str){//vector<string> &res,,map<string,string> &resAndSrc
+void parenthesesMatching(string &str){//map<string,string> &resAndSrc
     for(int i=0;i<str.length();i++){//length是不是边处理边变化？
         string replaceSign="res";
         if(str[i]=='('){
@@ -79,10 +78,8 @@ void parenthesesMatching(string &str){//vector<string> &res,,map<string,string> 
                 }
                 if(depth==0){
                     string s=str.substr(i,j-i+1);
-                    //res.push_back(s);
                     replaceSign+=to_string(resSign);
                     resSign++;
-                    //cout<<replaceSign<<endl;
                     resAndSrc.insert(pair<string,string>(replaceSign,s));
                     str.replace(i,j-i+1,replaceSign);
                     break;
@@ -93,15 +90,13 @@ void parenthesesMatching(string &str){//vector<string> &res,,map<string,string> 
     }
 }
 
-//"{\\frac{{\\alpha}\\times{res0}}{2+3}}+{\\frac{res1+\\pi}{2+3}}"
-//"\\frac{{\\alpha}\\times{res0}}{2+3}"
 void prefixMatching(string &str)
 {
     for(int i=0;i<21;i++)
     {
         string replaceSign="res";
         int pos=0;
-        if(opts[i].isPrior()==0&&str.find(opts[i].getOptString(),0)!=string::npos)
+        if(opts[i].isPrior()==0&&str.find(opts[i].getOptString(),0)!=string::npos&&opts[i].getOptString()!="-")
         {//在str中找到前缀运算符
             bool is_disposed=1;//默认已经处理过
             pos=str.find(opts[i].getOptString(),0);
@@ -161,8 +156,8 @@ void prefixMatching(string &str)
                                     string s2=str.substr (pos_begin1,pos_end1-pos_begin1+1);
                                     string s3=str.substr (pos_begin2,pos_end2-pos_begin2+1);
                                     string s=s2+s1+s3;
-                                    str=s;
                                     if(pos_end2-pos+1==str.length()){//symbolString为单纯的前缀表达式，且参数数量为2
+                                        str=s;
                                         break;
                                     }
                                     replaceSign+=to_string(resSign);
@@ -183,8 +178,6 @@ void prefixMatching(string &str)
     }
 }
 
-//应该是优先处理括号，再处理前缀吧？
-//编写一些 单独前缀，括号+前缀的样例
 string resMatching(string str){
     //若仍有运算符，则仍然常规生成树。与第三种情况的区别：(e.g. res+3)。以防进入情况2
     for (int i = 0; i < 21; i++)
@@ -200,7 +193,6 @@ string resMatching(string str){
         string map_res;//=map_res.substr(pos, map_res.length() - 2);
         for(int i=pos;i<str.length();i++){
             if(str[i]==')'||str[i]=='}'){
-                //res_id=str.substr(pos+3,i-pos);
                 map_res=str.substr(pos,i-pos);
                 break;
             }
@@ -213,20 +205,17 @@ string resMatching(string str){
         it=resAndSrc.find(map_res);
         string map_src=it->second;//取出该res对应的含括号的原公式
 
-        //parenthesesMatching(map_src);
-        //prefixMatching(str);
-
         if(map_src[0]=='('&&map_src[map_src.length()-1]==')'){//去除最外层括号。比如将{res0}转化为{res1+4}
             map_src=map_src.substr(1, map_src.length() - 2);
         }
+        //负数处理：
+        if(map_src[0]=='-'){map_src="X";}//仅做模糊化处理，可优化
         parenthesesMatching(map_src);
         for(int i=0;i<21;i++){
             if(opts[i].isPrior()==0&&map_src.find(opts[i].getOptString(),0)!=string::npos){
                 prefixMatching(map_src);
             }
         }
-
-
         return '{'+map_src+'}';
     }
     //仅含其他常量/变量符号
@@ -236,7 +225,6 @@ string resMatching(string str){
 }
 
 //其余公式的合法性可在解析时检查，抛出异常即可
-//先处理括号,再处理运算符优先级
 bitnode *CreateFormulaTree(string str)
 {
     bitnode *T = new bitnode;
@@ -246,10 +234,12 @@ bitnode *CreateFormulaTree(string str)
     opt root;
     for (int i = 0; i < 21; i++)
     {
+        if(i==3){
+            i++;
+        }
         if (str.find(opts[i].getOptString(), 0) != string::npos)
         {
             int pos_findrpt = 0;
-            /*针对测试示例2*/
             while ((pos_findrpt = str.find(opts[i].getOptString(), pos_findrpt)) != string::npos)
             {
                 pos_findrpt++;
@@ -274,7 +264,7 @@ bitnode *CreateFormulaTree(string str)
     else
     {
         T = CreateBitree(root.getOptString());
-        if(root.isPrior()==1||root.getParaNum()==2){
+        if(root.getParaNum()==2){
             string leftstr=str.substr(0, rootPosition);
             string rightstr=str.substr(rootPosition + root.getOptString().length(), str.length());
             //先判断它的类型
@@ -289,42 +279,6 @@ bitnode *CreateFormulaTree(string str)
             if(rightstr!=""){T->rchild = CreateFormulaTree(rightstr);}
         }
         return T;
-    }
-}
-
-
-
-
-void func(bitnode *root){//错误的递归函数，先留着
-    if(root){//该树非空
-        if(root->lchild==NULL&&root->rchild==NULL){//叶子
-            string str=root->Element;
-            if(str.find("res",0)!=string::npos){
-                //string res_id;
-                string map_res;
-                int pos=str.find("res",0);
-                for(int i=pos;i<str.length();i++){
-                    if(str[i]=='}'){
-                        //res_id=str.substr(pos+3,i-pos);
-                        map_res=str.substr(pos,i-pos);
-                    }
-                }
-                /*int id=atoi(res_id.c_str());
-                parenthesesMatching(res[id],)*/
-                map<string,string>::iterator it;
-                it=resAndSrc.find(map_res);
-                string map_src=it->second;//取出该res对应的含括号的原公式
-                root->Element=map_src.substr(1, map_src.length() - 2);
-                parenthesesMatching(root->Element);
-                root=CreateFormulaTree(root->Element);
-                //func(root);
-            }
-
-        }
-        else{
-            func(root->lchild);
-            func(root->rchild);
-        }
     }
 }
 
@@ -497,7 +451,8 @@ void ReplaceLeafToX(bitnode* root,map<string,string>&CONSTANTS){
             break;
         }
     }
-    if(root_is_opt==1){
+    if(root_is_opt==1)
+    {
         list<bitnode*>nodes;
         for(auto i=root->paranode.begin();i!=root->paranode.end();i++){
             bitnode* currentNode=*i;
@@ -511,8 +466,8 @@ void ReplaceLeafToX(bitnode* root,map<string,string>&CONSTANTS){
                 }
             }
             if(is_opt==0){//不为操作符
-                for(auto j=CONSTANTS.begin();j!=CONSTANTS.end();j++){
-
+                for(auto j=CONSTANTS.begin();j!=CONSTANTS.end();j++)
+                {
                     if(currentNode->Element.find(j->second,0)!=string::npos){
                         is_constant=1;
                         currentNode->Element=j->second;
@@ -526,6 +481,21 @@ void ReplaceLeafToX(bitnode* root,map<string,string>&CONSTANTS){
             nodes.push_back(currentNode);
         }
         root->paranode=nodes;
+    }
+    else
+    {
+        bool is_constant=0;
+        for(auto j=CONSTANTS.begin();j!=CONSTANTS.end();j++)
+        {
+            if(root->Element.find(j->second,0)!=string::npos){
+                is_constant=1;
+                root->Element=j->second;
+                break;
+            }
+        }
+        if(is_constant==0){
+            root->Element="X";
+        }
     }
 }
 
@@ -567,6 +537,9 @@ void Commutativity(vector<string> ordervec,bitnode* root){//string *symbols
                 if(ordervec[j]==currentNode->Element){
                     nodes.push_back(currentNode);
                 }
+            }
+            if(ordervec[j]=="-"){
+                j++;
             }
         }
         root->paranode=nodes;
@@ -751,25 +724,3 @@ void PrintIndexes(bitnode *& root,map<string,int> toParanum){
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

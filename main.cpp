@@ -1,15 +1,9 @@
 #include "FormulaAnalysis.h"
-#include <list>
-
 
 int resSign=0;
-
 map<string,string> resAndSrc;
 map<string,string>CONSTANTS;
 map<string,opt> string_to_opt;
-
-
-
 
 int main()
 {
@@ -18,7 +12,7 @@ int main()
     SetConstants(CONSTANTS);
 
 	string symbolstring;
-    symbolstring="1 + {(\\frac{1}{1-{x}^{2}})}^{3}";
+    symbolstring="\\sin{(x+y)}";
     cout<<"symbolstring:"<<symbolstring<<endl;
 
     //step1:括号匹配-将含有括号的部分转化为"res+i"并放入res中，使symbolstring中不含有任何“()”
@@ -79,23 +73,17 @@ int main()
     /*fortest:
      * SUCCEED:
      * ${(4+((\alpha+2)+3))}\times{3}+{(4+((1+\beta)+3))}$
-     * ${(4+((1+2)+3))}\times{3}+{(4+((1+2)+3))}$
-     * 单前缀示例：\frac{{\alpha}\times{(\beta+\pi)}}{2+3}
-     * {\frac{{\alpha}\times{\frac{2}{3}}}{2+3}}+{\frac{(\alpha+\beta)+\pi}{2+3}}
-     * \sin{(\alpha-\beta)}\implies{{\sin{\alpha}}\times{\cos{\beta}}-{{\cos{\alpha}\times{\sin{\beta}}}}}
-     * {\tan{(\alpha-\beta)}}\implies{\frac{{\tan{\alpha}}-{\tan{\beta}}}{{1}+{{\tan{\alpha}}\times{\tan{\beta}}}}}
-     * {\frac{{\alpha}\times{({\sqrt[3]{2}}+{5})}}{2+3}}+{\frac{(\alpha+\beta)+\pi}{2+3}}
-     * \frac{\sin{(x+y)}}{2+3}
-     * 1 + {(\frac{1}{1-{x}^{2}})}^{3}
-     *
+     * ${\frac{{\alpha}\times{\frac{2}{3}}}{2+3}}+{\frac{(\alpha+\beta)+\pi}{2+3}}$
+     * $\sin{(\alpha-\beta)}\implies{{\sin{\alpha}}\times{\cos{\beta}}-{{\cos{\alpha}\times{\sin{\beta}}}}}$
+     * ${((-4)-((\alpha+(-2))+3))}\times{(-3)}+{(4+(((-1)+\beta)-3))}$
+     * ${\tan{(\alpha-\beta)}}\implies{\frac{{\tan{\alpha}}-{\tan{\beta}}}{{1}+{{\tan{\alpha}}\times{\tan{\beta}}}}}$
+     * $\frac{{\alpha}\times{(\beta+\pi)}}{2+3}$
+     * $\frac{\sin{(x+y)}}{2+3}$
+     * $1+{(\frac{1}{1-{x}^{2}})}^{3}$
      *
      * FAILED:
-	 * $\alpha$,${3}$,${a}$ //流程需符合解析要求
-	 * $\alpha+\beta+\pi$
-	 * $\frac{{\alpha}*{(\beta+\pi})}{2+3}$//写错了啊老哥，但是真的很好笑哈哈哈哈哈哈，留给你看一下
-	 * $(2+(\alpha+\beta))\times\pi$ //悟了
 	 * 天生需要括号的运算符优先级不需要提高?
-	 * $\sin(x+y)$
+	 * $\sin(x+y)$ //如下，改为\sin{(x+y)}
 	 * $\frac{\sin(x+y)}{2+3}$//解不出来，三角函数后面还是跟{}，变成“\frac{\sin{(x+y)}}{2+3}”则可解
 	 * */
 
@@ -103,16 +91,9 @@ int main()
 	/* 乘方运算未考虑
 	 * 左右大型括号需求待定（例如分数的幂）
 	 * $1 + (\frac{1}{1-x^2})^3$  //改为： 1 + {(\frac{1}{1-{x}^{2}})}^{3}
-	 * $1 + \left(\frac{1}{1-x^2}\right)^3$
 	 */
 
 
 	return 0;
 }
 
-/*
- *1. 前缀的问题：转化为中缀处理；在最前面/在中间，如何识别它的运算元素？
- *2. 若遇到括号先当作整体处理，在它的里面进行递归解析;写几个示例
- *3. 乘方运算：优先级是不是应该高于前缀？把它看成一个数，又或者使它跟前缀同级。
- *
- * */

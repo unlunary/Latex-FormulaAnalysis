@@ -13,11 +13,9 @@ public:
 			: OptString(optString), IsPrior(isPrior), ParaNum(paraNum), IsAssociative(isAssociative),
 			  IsCommutative(isCommutative), Priority(priority) {}
 
-
 	virtual ~opt() {}
 
 	opt() {}
-
 
 	const string &getOptString() const;
 
