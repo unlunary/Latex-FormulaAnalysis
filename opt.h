@@ -1,88 +1,51 @@
-#ifndef FORMULAANALYSIS_OPT_H
-#define FORMULAANALYSIS_OPT_H
-#endif //FORMULAANALYSIS_OPT_H
+//定义操作符opt类
+#pragma once
 
 #include <iostream>
 #include <string>
+
 using namespace std;
 
-#define ALPHA "\\alpha"
-#define BETA "\\beta"
-#define GAMMA "\\gamma"
-#define LAMBDA "\\lambda"
-#define PI "\\pi"
-#define TAU "\\tau"
-
-
-class opt{
+class opt
+{
 public:
-    string OptString;
-    bool IsPrior;//是否为前缀0,中缀1
-    int ParaNum;//参数数量
-    bool IsAssociative;//可结合1
-    bool IsCommutative;//可交换1
-    float Priority;//运算符优先级
+	opt(const string &optString, bool isPrior, int paraNum, bool isAssociative, bool isCommutative, float priority)
+			: OptString(optString), IsPrior(isPrior), ParaNum(paraNum), IsAssociative(isAssociative),
+			  IsCommutative(isCommutative), Priority(priority) {}
 
-    opt(const string &optString, bool isPrior, int paraNum, bool isAssociative, bool isCommutative, float priority)
-            : OptString(optString), IsPrior(isPrior), ParaNum(paraNum), IsAssociative(isAssociative),
-              IsCommutative(isCommutative), Priority(priority) {}
+	virtual ~opt() {}
 
-    virtual ~opt() {
-    }
+	opt() {}
 
-    const string &getOptString() const {
-        return OptString;
-    }
+	const string &getOptString() const;
 
-    void setOptString(const string &optString) {
-        OptString = optString;
-    }
+	void setOptString(const string &optString);
 
-    bool isPrior() const {
-        return IsPrior;
-    }
+	bool isPrior() const;
 
-    void setIsPrior(bool isPrior) {
-        IsPrior = isPrior;
-    }
+	void setIsPrior(bool isPrior);
 
-    int getParaNum() const {
-        return ParaNum;
-    }
+	int getParaNum() const;
 
-    void setParaNum(int paraNum) {
-        ParaNum = paraNum;
-    }
+	void setParaNum(int paraNum);
 
-    bool isAssociative() const {
-        return IsAssociative;
-    }
+	bool isAssociative() const;
 
-    void setIsAssociative(bool isAssociative) {
-        IsAssociative = isAssociative;
-    }
+	void setIsAssociative(bool isAssociative);
 
-    bool isCommutative() const {
-        return IsCommutative;
-    }
+	bool isCommutative() const;
 
-    void setIsCommutative(bool isCommutative) {
-        IsCommutative = isCommutative;
-    }
+	void setIsCommutative(bool isCommutative);
 
-    float getPriority() const {
-        return Priority;
-    }
+	float getPriority() const;
 
-    void setPriority(float priority) {
-        Priority = priority;
-    }
+	void setPriority(float priority);
 
-};
-
-class bitnode{
-public:
-    string Element;//元素
-    /*↑这里要不要用模板？存opt类，或者运算数值*/
-    bitnode *lchild,*rchild;
+private:
+	string OptString;
+	bool IsPrior;//前缀0,中缀1
+	int ParaNum;//参数数量
+	bool IsAssociative;//可结合1
+	bool IsCommutative;//可交换1
+	float Priority;//运算符优先级
 };
