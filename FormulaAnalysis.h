@@ -4,7 +4,8 @@
 #include "opt.h"
 #include <algorithm>
 #include <vector>
-#include<map>
+#include <map>
+#include <stack>
 
 //1210
 #include<list>
@@ -54,6 +55,8 @@ public:
 };
 
 /*解析1*/
+bool isLegal(string symbolstring);
+
 void parenthesesMatching(string &str);
 
 void prefixMatching(string &str);

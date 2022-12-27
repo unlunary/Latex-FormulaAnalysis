@@ -15,6 +15,13 @@ int main()
     symbolstring="\\sin{(x+y)}";
     cout<<"symbolstring:"<<symbolstring<<endl;
 
+	//step0:括号匹配
+	if (!isLegal(symbolstring))
+	{
+		cout<<"illegal formula!"<<endl;
+		return 0;
+	}
+
     //step1:括号匹配-将含有括号的部分转化为"res+i"并放入res中，使symbolstring中不含有任何“()”
     parenthesesMatching(symbolstring);
 
