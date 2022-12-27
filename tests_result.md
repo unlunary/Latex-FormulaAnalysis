@@ -229,6 +229,27 @@ FRAC, SQRT, MINUS, NEGSIGN, SIN, COS, TAN,ADD, MULTIPLY, POWER,IMPLY
 - indexes:
   t1+t2: \iff(2){X}{\cup(2){X}{\cap(2){X}{X}}}
 
+#### （13）
+```latex
+\neg{{A}\cap{B}}\iff{{\neg{A}}\cup{\neg{B}}}
+```
+
+- tree to string:19220115210220120160606060
+- print tree's index:\implies(2){\neg(1){\cap(2){X}{X}}}{\cup(2){\neg(1){X}}{\neg(1){X}}}
+- indexes:
+  \implies(2){\neg(1){\cap(2){X}{X}}}{\cup(2){\neg(1){X}}{\neg(1){X}}}
+
+#### （14）
+
+```latex
+{{P}\implies{Q}}\iff{{\neg{P}}\implies{\neg{Q}}}
+```
+
+- tree to string:18219219260602012016060
+- print tree's index:\iff(2){\implies(2){X}{X}}{\implies(2){\neg(1){X}}{\neg(1){X}}}
+- indexes:
+  t1+t2: \iff(2){\implies(2){X}{X}}{\implies(2){\neg(1){X}}{\neg(1){X}}}
+
 
 #### （15）
 ```latex
