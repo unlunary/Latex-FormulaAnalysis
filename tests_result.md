@@ -33,6 +33,17 @@ FRAC, SQRT, MINUS, NEGSIGN, SIN, COS, TAN,ADD, MULTIPLY, POWER,IMPLY
 
 ### 测试样例结果
 
+#### 非法公式样例
+
+\times前缺大括号
+```latex
+{(4+((\alpha+2)+3))\times{3}+{(4+((1+\beta)+3))}
+```
+\pi后缺小括号
+```latex
+\frac{{\alpha}\times{(\beta+\pi}}{2+3}
+```
+
 #### （1）可判断括号优先级示例：
 
 ```latex
@@ -135,23 +146,6 @@ FRAC, SQRT, MINUS, NEGSIGN, SIN, COS, TAN,ADD, MULTIPLY, POWER,IMPLY
   \implies(2){\tan(1){-(2){\alpha}{\beta}}}{\frac(2){-(2){\tan(1){\alpha}}{\tan(1){\beta}}}{+(2){X}{\times(2){\tan(1){\alp
   ha}}{\tan(1){\beta}}}}}
 
-
-
-#### （6）
-
-```latex
-\frac{{\alpha}\times{(\beta+\pi)}}{2+3}
-```
-
-- tree to string:17226272007260601040
-
-- print tree's index:\frac(2){\times(2){\alpha}{+(2){\beta}{\pi}}}{+(2){X}{X}}
-
-- indexes:
-  \frac(2){\times(2){\alpha}{+(2){\beta}{\pi}}}{+(2){X}{X}}
-
-
-
 #### （7）
 
 ```latex
@@ -163,21 +157,6 @@ FRAC, SQRT, MINUS, NEGSIGN, SIN, COS, TAN,ADD, MULTIPLY, POWER,IMPLY
 - print tree's index:+(2){\frac(2){\times(2){\alpha}{+(2){X}{\sqrt(2){X}{X}}}}{+(2){X}{X}}}{\frac(2){+(3){\alpha}{\beta}{\pi}}{+(2){X}{X}}}
 - indexes:
   t1+t2: +(2){\frac(2){\times(2){\alpha}{+(2){X}{\sqrt(2){X}{X}}}}{+(2){X}{X}}}{\frac(2){+(3){\alpha}{\beta}{\pi}}{+(2){X}{X}}}
-
-
-
-#### （8）
-
-```latex
-\frac{\sin{(x+y)}}{2+3}
-```
-
-- tree to string:172231727260606060
-
-- print tree's index:\frac(2){\sin(1){+(2){X}{X}}}{+(2){X}{X}}
-
-- indexes:
-  \frac(2){\sin(1){+(2){X}{X}}}{+(2){X}{X}}
 
 
 
