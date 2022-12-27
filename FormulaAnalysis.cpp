@@ -64,6 +64,43 @@ void markPriority(const string &str)
 	}
 }
 
+bool isLegal(string symbolstring)
+{
+	stack<char> s;
+	for (int i = 0; i < symbolstring.length(); i++)
+	{
+		if (symbolstring[i] == '(' || symbolstring[i] == '{')
+		{
+			s.push(symbolstring[i]);
+		} else if (symbolstring[i] == ')' || symbolstring[i] == '}')
+		{
+			if (s.empty())
+			{
+				return false;
+			}
+			char top = s.top();
+			if (top == '(' && symbolstring[i] == ')')
+			{
+				s.pop();
+			} else if (top == '{' && symbolstring[i] == '}')
+			{
+				s.pop();
+			} else
+			{
+				return false;
+			}
+		}
+	}
+	if (s.empty())
+	{
+		return true;
+	} else
+	{
+		return false;
+	}
+}
+
+
 void parenthesesMatching(string &str){//map<string,string> &resAndSrc
     for(int i=0;i<str.length();i++){//length是不是边处理边变化？
         string replaceSign="res";
