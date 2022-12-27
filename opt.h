@@ -6,14 +6,6 @@
 
 using namespace std;
 
-#define ALPHA "\\alpha"
-#define BETA "\\beta"
-#define GAMMA "\\gamma"
-#define LAMBDA "\\lambda"
-#define PI "\\pi"
-#define TAU "\\tau"
-
-
 class opt
 {
 public:
@@ -21,11 +13,9 @@ public:
 			: OptString(optString), IsPrior(isPrior), ParaNum(paraNum), IsAssociative(isAssociative),
 			  IsCommutative(isCommutative), Priority(priority) {}
 
-
 	virtual ~opt() {}
 
 	opt() {}
-
 
 	const string &getOptString() const;
 
@@ -53,7 +43,7 @@ public:
 
 private:
 	string OptString;
-	bool IsPrior;//是否为前缀0,中缀1
+	bool IsPrior;//前缀0,中缀1
 	int ParaNum;//参数数量
 	bool IsAssociative;//可结合1
 	bool IsCommutative;//可交换1
