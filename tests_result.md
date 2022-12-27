@@ -13,13 +13,13 @@
 
 ##### 未测：
 
-COT, SEC, CSC（三角函数，补充样例即可）
+- [x] COT, SEC, CSC（三角函数，补充样例即可）
 
-~~DEGREE~~, （不在解析范围内）
+- [x] ~~DEGREE~~, （不在解析范围内）
 
-DIVIDE, （同理MULTIPLY）
+- [x] DIVIDE, （同理MULTIPLY）
 
-NOT,AND, OR, XOR, IFF （可用离散课本中习题）
+- [x] NOT,AND, OR, XOR, IFF （可用离散课本中习题）
 
 ##### 已测：
 
@@ -193,3 +193,49 @@ FRAC, SQRT, MINUS, NEGSIGN, SIN, COS, TAN,ADD, MULTIPLY, POWER,IMPLY
 
 - indexes:
   - t1+t2: +(2){X}{^(2){\frac(2){X}{-(2){X}{^(2){X}{X}}}}{X}}
+
+#### （10）
+
+```latex
+\cot{(\alpha-\beta)}\implies{{\sec{\alpha}}\times{\csc{\beta}}-{{\cos{\alpha}\times{\sin{\beta}}}}}
+```
+
+- tree to string:1921318282262262001014122112123110000010
+- print tree's index:\implies(2){\cot(1){-(2){\alpha}{\beta}}}{-(2){\times(2){\csc(1){\beta}}{\sec(1){\alpha}}}{\times(2){
+  \cos(1){\alpha}}{\sin(1){\beta}}}}
+- indexes:
+  \implies(2){\cot(1){-(2){\alpha}{\beta}}}{-(2){\times(2){\csc(1){\beta}}{\sec(1){\alpha}}}{\times(2){\cos(1){\alpha}}{\s
+  in(1){\beta}}}}
+
+#### （11）
+
+```latex
+\frac{{\alpha}\divide{(\beta+\pi)}}{2+3}
+```
+
+- tree to string:17216272007260601040
+- print tree's index:\frac(2){\div(2){\alpha}{+(2){\beta}{\pi}}}{+(2){X}{X}}
+- indexes:
+  \frac(2){\div(2){\alpha}{+(2){\beta}{\pi}}}{+(2){X}{X}}
+
+#### （12）
+
+```latex
+{A}\cup{({A}\cap{B})}\iff{A}
+```
+
+- tree to string:18260152601026060
+- print tree's index:\iff(2){X}{\cup(2){X}{\cap(2){X}{X}}}
+- indexes:
+  t1+t2: \iff(2){X}{\cup(2){X}{\cap(2){X}{X}}}
+
+
+#### （15）
+```latex
+{A}\oplus{({A}\cap{B})}\implies{A}
+```
+
+- tree to string:19221260601026060
+- print tree's index:\implies(2){\oplus(2){X}{\cap(2){X}{X}}}{X}
+- indexes:
+  \implies(2){\oplus(2){X}{\cap(2){X}{X}}}{X}
